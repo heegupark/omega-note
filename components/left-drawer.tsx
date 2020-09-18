@@ -13,7 +13,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import DeleteOutlineRoundedIcon from '@material-ui/icons/DeleteOutlineRounded';
 import NoteRoundedIcon from '@material-ui/icons/NoteRounded';
-import { Flex, Box } from '@chakra-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddIcon from '@material-ui/icons/Add';
 
@@ -96,6 +95,10 @@ const useStyles = makeStyles((theme: Theme) =>
       '&:hover': {
         backgroundColor: 'rgb(0,143,38)',
       },
+      padding: '8px',
+      margin: 'auto',
+      width: '70%',
+      height: '40px',
     },
   })
 );
@@ -139,9 +142,13 @@ export default function LeftDrawer() {
         <List>
           <ListItem button key="add-note" className={classes.addNote}>
             <ListItemIcon>
-              <AddIcon className={classes.addNoteIcon} />
+              <Tooltip title="Click to add a note" arrow>
+                <AddIcon className={classes.addNoteIcon} />
+              </Tooltip>
             </ListItemIcon>
-            <ListItemText primary="New Note" />
+            <Tooltip title="Click to add a note" arrow>
+              <ListItemText primary="New Note" />
+            </Tooltip>
           </ListItem>
         </List>
         <List>

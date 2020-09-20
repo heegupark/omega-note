@@ -32,45 +32,6 @@ body {
 }
 
 @media (max-width: 575.98px) {
-  body {
-    font-size: 13px;
-  }
-
-  .card-detail-left {
-    padding: 5px;
-  }
-
-  .card-deatil-title {
-    font-size: 14px;
-  }
-
-  .card-detail-note {
-    font-size: 13px;
-  }
-
-  .card-deatil-checklist {
-    font-size: 13px;
-  }
-
-  .complete-btn {
-    height: 28px;
-  }
-
-  .activity-log-content {
-    width: 100%;
-  }
-
-  .activity-icon {
-    padding: 0px;
-  }
-
-  .activity-content {
-    font-size: 12px;
-  }
-
-  .modal-paper {
-    height: 100%;
-  }
 }
 
 @media (max-height: 375px) {

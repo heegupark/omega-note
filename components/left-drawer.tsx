@@ -3,8 +3,6 @@ import clsx from 'clsx';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -20,8 +18,8 @@ const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      display: 'flex',
+    paper: {
+      padding: '5px',
     },
     appBar: {
       zIndex: theme.zIndex.drawer + 1,
@@ -57,6 +55,7 @@ const useStyles = makeStyles((theme: Theme) =>
       }),
       backgroundColor: 'rgb(26,26,26)',
       color: 'rgb(165,165,165)',
+      padding: '5px',
     },
     drawerClose: {
       transition: theme.transitions.create('width', {
@@ -69,6 +68,7 @@ const useStyles = makeStyles((theme: Theme) =>
         width: theme.spacing(7) + 1,
       },
       backgroundColor: 'rgb(26,26,26)',
+      padding: '5px 0px',
     },
     toolbar: {
       position: 'absolute',
@@ -78,9 +78,11 @@ const useStyles = makeStyles((theme: Theme) =>
       // necessary for content to be below app bar
       ...theme.mixins.toolbar,
     },
-    content: {
-      flexGrow: 1,
-      padding: theme.spacing(3),
+    folder: {
+      '&:hover': {
+        backgroundColor: 'rgb(64,64,64)',
+        borderRadius: '3px',
+      },
     },
     icon: {
       color: 'rgb(165,165,165)',
@@ -97,7 +99,6 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       padding: '8px',
       margin: 'auto',
-      width: '70%',
       height: '40px',
     },
   })
@@ -112,107 +113,76 @@ export default function LeftDrawer() {
   };
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-
-      <Drawer
-        variant="permanent"
-        className={clsx(classes.drawer, {
+    <Drawer
+      variant="permanent"
+      className={clsx(classes.drawer, {
+        [classes.drawerOpen]: open,
+        [classes.drawerClose]: !open,
+      })}
+      classes={{
+        paper: clsx({
           [classes.drawerOpen]: open,
           [classes.drawerClose]: !open,
-        })}
-        classes={{
-          paper: clsx({
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
-          }),
-        }}
-      >
-        <List>
-          <ListItem key="o-note">
-            <ListItemIcon>
-              <img
-                src="../../static/images/o-logo.png"
-                style={{ width: '22px' }}
-              />
-            </ListItemIcon>
-            <ListItemText primary="o-note" />
-          </ListItem>
-        </List>
-        <List>
-          <ListItem button key="add-note" className={classes.addNote}>
-            <ListItemIcon>
-              <Tooltip title="Click to add a note" arrow>
-                <AddIcon className={classes.addNoteIcon} />
-              </Tooltip>
-            </ListItemIcon>
+        }),
+      }}
+    >
+      <List>
+        <ListItem key="o-note">
+          <ListItemIcon>
+            <img
+              src="../../static/images/o-logo.png"
+              style={{ width: '22px' }}
+            />
+          </ListItemIcon>
+          <ListItemText primary="o-note" />
+        </ListItem>
+      </List>
+      <List>
+        <ListItem
+          button
+          key="add-note"
+          className={classes.addNote}
+          style={{ width: open ? '85%' : '70%' }}
+        >
+          <ListItemIcon>
             <Tooltip title="Click to add a note" arrow>
-              <ListItemText primary="New Note" />
+              <AddIcon className={classes.addNoteIcon} />
             </Tooltip>
-          </ListItem>
-        </List>
-        <List>
-          <ListItem button key="Notebooks">
-            <ListItemIcon>
-              <NoteRoundedIcon className={classes.icon} />
-            </ListItemIcon>
-            <ListItemText primary="Notebooks" />
-          </ListItem>
-        </List>
-        <List>
-          <ListItem button key="Trash">
-            <ListItemIcon>
-              <DeleteOutlineRoundedIcon className={classes.icon} />
-            </ListItemIcon>
-            <ListItemText primary="Trash" />
-          </ListItem>
-        </List>
-        <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerToggle} className={classes.icon}>
-            {open ? (
-              <Tooltip title="Click to close" arrow>
-                <ChevronLeftIcon />
-              </Tooltip>
-            ) : (
-              <Tooltip title="Click to open" arrow>
-                <ChevronRightIcon />
-              </Tooltip>
-            )}
-          </IconButton>
-        </div>
-      </Drawer>
-      <main className={classes.content}>
-        {/* <div className={classes.toolbar} /> */}
-        <Typography paragraph>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Rhoncus
-          dolor purus non enim praesent elementum facilisis leo vel. Risus at
-          ultrices mi tempus imperdiet. Semper risus in hendrerit gravida rutrum
-          quisque non tellus. Convallis convallis tellus id interdum velit
-          laoreet id donec ultrices. Odio morbi quis commodo odio aenean sed
-          adipiscing. Amet nisl suscipit adipiscing bibendum est ultricies
-          integer quis. Cursus euismod quis viverra nibh cras. Metus vulputate
-          eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo
-          quis imperdiet massa tincidunt. Cras tincidunt lobortis feugiat
-          vivamus at augue. At augue eget arcu dictum varius duis at consectetur
-          lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa sapien
-          faucibus et molestie ac.
-        </Typography>
-        <Typography paragraph>
-          Consequat mauris nunc congue nisi vitae suscipit. Fringilla est
-          ullamcorper eget nulla facilisi etiam dignissim diam. Pulvinar
-          elementum integer enim neque volutpat ac tincidunt. Ornare suspendisse
-          sed nisi lacus sed viverra tellus. Purus sit amet volutpat consequat
-          mauris. Elementum eu facilisis sed odio morbi. Euismod lacinia at quis
-          risus sed vulputate odio. Morbi tincidunt ornare massa eget egestas
-          purus viverra accumsan in. In hendrerit gravida rutrum quisque non
-          tellus orci ac. Pellentesque nec nam aliquam sem et tortor. Habitant
-          morbi tristique senectus et. Adipiscing elit duis tristique
-          sollicitudin nibh sit. Ornare aenean euismod elementum nisi quis
-          eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
-          posuere sollicitudin aliquam ultrices sagittis orci a.
-        </Typography>
-      </main>
-    </div>
+          </ListItemIcon>
+          <Tooltip title="Click to add a note" arrow>
+            <ListItemText primary="New Note" />
+          </Tooltip>
+        </ListItem>
+      </List>
+      <List>
+        <ListItem button key="Notebooks" className={classes.folder}>
+          <ListItemIcon>
+            <NoteRoundedIcon className={classes.icon} />
+          </ListItemIcon>
+          <ListItemText primary="Notebooks" />
+        </ListItem>
+      </List>
+      <List>
+        <ListItem button key="Trash" className={classes.folder}>
+          <ListItemIcon>
+            <DeleteOutlineRoundedIcon className={classes.icon} />
+          </ListItemIcon>
+          <ListItemText primary="Trash" />
+        </ListItem>
+      </List>
+      <div className={classes.toolbar}>
+        <IconButton onClick={handleDrawerToggle} className={classes.icon}>
+          {open ? (
+            <Tooltip title="Click to close" arrow>
+              <ChevronLeftIcon />
+            </Tooltip>
+          ) : (
+            <Tooltip title="Click to open" arrow>
+              <ChevronRightIcon />
+            </Tooltip>
+          )}
+        </IconButton>
+      </div>
+    </Drawer>
   );
 }

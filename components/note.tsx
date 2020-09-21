@@ -32,7 +32,12 @@ export default function Note(props: any) {
     <>
       <div className={classes.root}>
         <div className={classes.box}>
-          <NoteList addNewNote={props.addNewNote} />
+          <NoteList
+            notebooks={props.notebooks}
+            notebookOrder={props.notebookOrder}
+            notebook={props.notebook}
+            addNewNote={props.addNewNote}
+          />
         </div>
         <div>
           <span>Contents2</span>

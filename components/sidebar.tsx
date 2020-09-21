@@ -13,6 +13,7 @@ import DeleteOutlineRoundedIcon from '@material-ui/icons/DeleteOutlineRounded';
 import NoteRoundedIcon from '@material-ui/icons/NoteRounded';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddIcon from '@material-ui/icons/Add';
+import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 
 const drawerWidth = 240;
 
@@ -79,8 +80,23 @@ const useStyles = makeStyles((theme: Theme) =>
       ...theme.mixins.toolbar,
     },
     folder: {
+      padding: '0px 10px',
       '&:hover': {
-        backgroundColor: 'rgb(64,64,64)',
+        backgroundColor: 'rgb(51,51,51)',
+        borderRadius: '3px',
+      },
+    },
+    listSelected: {
+      backgroundColor: 'rgb(64,64,64)',
+      borderRadius: '3px',
+      '&:hover': {
+        backgroundColor: 'rgb(51,51,51)',
+        borderRadius: '3px',
+      },
+    },
+    list: {
+      '&:hover': {
+        backgroundColor: 'rgb(51,51,51)',
         borderRadius: '3px',
       },
     },
@@ -159,15 +175,52 @@ export default function Sidebar(props: any) {
         </ListItem>
       </List>
       <List>
-        <ListItem button key="Notebooks" className={classes.folder}>
+        <ListItem
+          button
+          key="Notebooks"
+          className={classes.folder}
+          style={{ padding: open ? '0px 10px' : '0px 15px' }}
+        >
           <ListItemIcon>
             <NoteRoundedIcon className={classes.icon} />
           </ListItemIcon>
           <ListItemText primary="Notebooks" />
         </ListItem>
+        {props.notebookOrder.length > 0
+          ? props.notebookOrder.map((notebook: any) => {
+              console.log(props.notebook, notebook);
+              return (
+                <ListItem
+                  button
+                  key={props.notebooks[notebook].id}
+                  className={
+                    props.notebook === notebook
+                      ? classes.listSelected
+                      : classes.list
+                  }
+                  onClick={() =>
+                    props.setNotebook(props.notebooks[notebook].id)
+                  }
+                  style={{
+                    padding: open ? '0px 0px 0px 40px' : '0px 15px',
+                  }}
+                >
+                  <ListItemIcon>
+                    <ImportContactsIcon className={classes.icon} />
+                  </ListItemIcon>
+                  <ListItemText primary={props.notebooks[notebook].title} />
+                </ListItem>
+              );
+            })
+          : ''}
       </List>
       <List>
-        <ListItem button key="Trash" className={classes.folder}>
+        <ListItem
+          button
+          key="Trash"
+          className={classes.folder}
+          style={{ padding: open ? '0px 10px' : '0px 15px' }}
+        >
           <ListItemIcon>
             <DeleteOutlineRoundedIcon className={classes.icon} />
           </ListItemIcon>

@@ -13,10 +13,15 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: 'auto',
       color: 'rgb(51,51,51)',
       fontSize: '16px',
+      width: '100%',
     },
     title: {
       padding: '10px',
       fontSize: '22px',
+    },
+    list: {
+      padding: '20px',
+      height: '100px',
     },
     empty: {
       alignItems: 'center',
@@ -41,22 +46,35 @@ export default function NoteList(props: any) {
     <div className={classes.root}>
       <div className={classes.title}>title</div>
       <Divider />
-      <div className={classes.empty}>
-        <div className={classes.emptyIcon}>
-          <CgNotes />
+      {props.notebooks[props.notebook].notes.length > 0 ? (
+        <>
+          {props.notebooks[props.notebook].notes.map((note: any) => {
+            return (
+              <div key={note.id}>
+                <div className={classes.list}>{note.noteTitle}</div>
+                <Divider />
+              </div>
+            );
+          })}
+        </>
+      ) : (
+        <div className={classes.empty}>
+          <div className={classes.emptyIcon}>
+            <CgNotes />
+          </div>
+          <div>It all begins with notes</div>
+          <div>
+            Click the{' '}
+            <span
+              onClick={() => props.addNewNote()}
+              className={classes.newNoteText}
+            >
+              + New Note
+            </span>{' '}
+            button in the side bar to create note.
+          </div>
         </div>
-        <div>It all begins with notes</div>
-        <div>
-          Click the{' '}
-          <span
-            onClick={() => props.addNewNote()}
-            className={classes.newNoteText}
-          >
-            + New Note
-          </span>{' '}
-          button in the side bar to create note.
-        </div>
-      </div>
+      )}
     </div>
   );
 }

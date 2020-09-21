@@ -104,12 +104,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function LeftDrawer() {
+export default function LeftDrawer(props: any) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
 
   const handleDrawerToggle = () => {
     setOpen(!open);
+    props.setOpen(!open);
   };
 
   return (

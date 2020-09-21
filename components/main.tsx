@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 // import Disclaimer from './disclaimer';
 import LeftDrawer from './left-drawer';
 import Note from './note';
@@ -13,15 +13,16 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function Main(props: any) {
+export default function Main() {
   const classes = useStyles();
+  const [open, setOpen] = useState(true);
 
   return (
     <>
       <div className={classes.root}>
         <CssBaseline />
-        <LeftDrawer />
-        <Note />
+        <LeftDrawer setOpen={setOpen} />
+        <Note open={open} />
       </div>
     </>
   );

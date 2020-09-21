@@ -1,46 +1,61 @@
 import React, { useState } from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Box } from '@chakra-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { CgNotes } from 'react-icons/cg';
+import Divider from '@material-ui/core/Divider';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
-      flexDdirection: 'row',
+      flexDirection: 'column',
       height: '100vh',
+      margin: 'auto',
+      color: 'rgb(51,51,51)',
+      fontSize: '16px',
     },
-    box: {
-      display: 'flex',
-      flexDdirection: 'column',
-      backgroundColor: 'rgb(248, 248, 248)',
+    title: {
       padding: '10px',
-      height: '100vh',
-      resize: 'horizontal',
-      minWidth: '200px',
-      width: '300px',
-      maxWidth: '400px',
-      overflow: 'hidden',
-      borderRight: '1px solid rgb(230, 230, 230)',
+      fontSize: '22px',
     },
-    handle: {
-      width: '3px',
-      backgroundColor: 'black',
-      cursor: 'ew-resize',
+    empty: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      margin: 'auto',
+      textAlign: 'center',
+      padding: '35px',
+    },
+    emptyIcon: {
+      fontSize: '75px',
+    },
+    newNoteText: {
+      cursor: 'pointer',
+      color: 'rgb(0,168,45)',
     },
   })
 );
-
-export default function NoteList() {
+export default function NoteList(props: any) {
   const classes = useStyles();
-  const listBoxRef = React.createRef();
 
   return (
     <div className={classes.root}>
-      <div className={classes.box}>
-        <span>Contents</span>
-      </div>
-      <div>
-        <span>Contents2</span>
+      <div className={classes.title}>title</div>
+      <Divider />
+      <div className={classes.empty}>
+        <div className={classes.emptyIcon}>
+          <CgNotes />
+        </div>
+        <div>It all begins with notes</div>
+        <div>
+          Click the{' '}
+          <span
+            onClick={() => props.addNewNote()}
+            className={classes.newNoteText}
+          >
+            + New Note
+          </span>{' '}
+          button in the side bar to create note.
+        </div>
       </div>
     </div>
   );

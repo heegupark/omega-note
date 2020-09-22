@@ -35,7 +35,8 @@ export default function Main() {
           {
             id: uuidv4(),
             noteTitle: 'Tech interview',
-            note: '',
+            note: 'Amazon interview',
+            dragging: false,
             isDeleted: false,
             createdAt: new Date(2020, 8, 10),
             updatedAt: new Date(2020, 8, 10),
@@ -43,7 +44,8 @@ export default function Main() {
           {
             id: uuidv4(),
             noteTitle: 'Meet up',
-            note: '',
+            note: 'Google',
+            dragging: false,
             isDeleted: false,
             createdAt: new Date(2020, 8, 11),
             updatedAt: new Date(2020, 8, 11),
@@ -60,6 +62,7 @@ export default function Main() {
             id: uuidv4(),
             noteTitle: 'Pay Utilities',
             note: '',
+            dragging: false,
             isDeleted: false,
             createdAt: new Date(2020, 8, 11),
             updatedAt: new Date(2020, 8, 11),
@@ -84,19 +87,22 @@ export default function Main() {
       id: uuidv4(),
       noteTitle: 'Untitled',
       note: '',
+      dragging: false,
       isDeleted: false,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
     state.notebooks[notebook].notes.unshift(newNote);
     handleSnackbar(`A note is created`, 'info');
+    setState({
+      ...state,
+    } as any);
   };
 
   const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
     if (reason === 'clickaway') {
       return;
     }
-
     setOpen(false);
   };
 
@@ -106,10 +112,27 @@ export default function Main() {
     setOpen(true);
   };
 
+  const updateNote = (notebookId: string, noteId: string, newNote: any) => {
+    console.log('aaa');
+    state.notebooks[notebookId].notes.map((note: any) => {
+      if (note.id === noteId) {
+        note.noteTitle = newNote.noteTitle;
+        note.note = newNote.note;
+        note.dragging = newNote.dragging;
+        note.isDeleted = newNote.isDeleted;
+        note.updatedAt = new Date();
+      }
+    });
+    setState({
+      ...state,
+    } as any);
+  };
+
   return (
     <>
       <div className={classes.root}>
         <CssBaseline />
+
         <Sidebar
           notebooks={state.notebooks}
           notebookOrder={state.notebookOrder}
@@ -124,6 +147,7 @@ export default function Main() {
           notebook={notebook}
           addNewNote={addNewNote}
           open={open}
+          updateNote={updateNote}
         />
         <Snackbar
           open={open}

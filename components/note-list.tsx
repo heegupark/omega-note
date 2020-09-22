@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Box } from '@chakra-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { CgNotes } from 'react-icons/cg';
 import Divider from '@material-ui/core/Divider';
+import { DragPreviewImage, useDrag } from 'react-dnd';
+import NoteListItem from './note-list-item';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,10 +19,6 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       padding: '10px',
       fontSize: '22px',
-    },
-    list: {
-      padding: '20px',
-      height: '100px',
     },
     empty: {
       alignItems: 'center',
@@ -39,6 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+
 export default function NoteList(props: any) {
   const classes = useStyles();
 
@@ -51,7 +49,7 @@ export default function NoteList(props: any) {
           {props.notebooks[props.notebook].notes.map((note: any) => {
             return (
               <div key={note.id}>
-                <div className={classes.list}>{note.noteTitle}</div>
+                <NoteListItem noteTitle={note.noteTitle} note={note.note} />
                 <Divider />
               </div>
             );

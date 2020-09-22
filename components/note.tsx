@@ -1,6 +1,8 @@
 import React from 'react';
 import NoteList from './note-list';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,12 +34,15 @@ export default function Note(props: any) {
     <>
       <div className={classes.root}>
         <div className={classes.box}>
-          <NoteList
-            notebooks={props.notebooks}
-            notebookOrder={props.notebookOrder}
-            notebook={props.notebook}
-            addNewNote={props.addNewNote}
-          />
+          <DndProvider backend={HTML5Backend}>
+            <NoteList
+              notebooks={props.notebooks}
+              notebookOrder={props.notebookOrder}
+              notebook={props.notebook}
+              addNewNote={props.addNewNote}
+              updateNote={props.updateNote}
+            />
+          </DndProvider>
         </div>
         <div>
           <span>Contents2</span>

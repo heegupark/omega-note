@@ -1,8 +1,9 @@
-import React from 'react';
-import NoteList from './note-list';
+import React, { useEffect, useState, useRef } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import NoteList from './note-list';
+import Editor from './editor';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -10,6 +11,16 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDdirection: 'row',
       height: '100vh',
+    },
+    loading: {
+      margin: '20px 20px 0px 20px',
+    },
+    progress: {
+      width: '100%',
+      margin: '20px 20px 0px 20px',
+      '& > * + *': {
+        marginTop: theme.spacing(2),
+      },
     },
     box: {
       display: 'flex',
@@ -45,7 +56,7 @@ export default function Note(props: any) {
           </DndProvider>
         </div>
         <div>
-          <span>Contents2</span>
+          <Editor />
         </div>
       </div>
     </>

@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDdirection: 'column',
       backgroundColor: 'rgb(248, 248, 248)',
-      padding: '10px',
+      // padding: '10px',
       height: '100vh',
       resize: 'horizontal',
       minWidth: '200px',

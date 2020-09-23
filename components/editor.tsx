@@ -15,11 +15,18 @@ const useStyles = makeStyles((theme: Theme) =>
         marginTop: theme.spacing(2),
       },
     },
+    editor: {
+      width: '100%',
+      maxWidth: '800px',
+      '&:hover': {
+        backgroundColor: 'white',
+      },
+    },
   })
 );
 
 const theme = 'snow';
-const placeholder = 'Compose an epic...';
+const placeholder = `What's in your mind?`;
 const modules = {
   toolbar: [
     [{ header: '1' }, { header: '2' }, { font: [] }, { color: [] }],
@@ -105,11 +112,7 @@ export default function Editor(props: any) {
           formats={formats}
           bounds={'.app'}
           placeholder={placeholder}
-          style={{
-            width: '100%',
-            maxWidth: '800px',
-            height: '89vh',
-          }}
+          className={classes.editor}
         />
       )}
     </>

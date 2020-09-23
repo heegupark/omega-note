@@ -1,3 +1,8 @@
+html,
+body {
+  overflow-y: hidden;
+}
+
 .ql-toolbar.ql-snow {
   border: none;
   border-bottom: 1px solid rgb(242, 242, 242);
@@ -5,4 +10,8 @@
 
 .ql-container.ql-snow {
   border: none;
+}
+
+.ql-editor {
+  height: 85vh;
 }

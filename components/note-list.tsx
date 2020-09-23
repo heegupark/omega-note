@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { CgNotes } from 'react-icons/cg';
 import Divider from '@material-ui/core/Divider';
-import { DragPreviewImage, useDrag } from 'react-dnd';
 import NoteListItem from './note-list-item';
 
 const useStyles = makeStyles((theme: Theme) =>

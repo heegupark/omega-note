@@ -31,10 +31,22 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '22px',
     },
     box: {
-      // position: 'sticky',
       height: '100px',
       cursor: 'pointer',
       display: 'flex',
+      border: '1px groove rgb(0,0,0,0)',
+      flexDirection: 'column',
+      overflow: 'hidden',
+      wordWrap: 'break-word',
+      padding: '15px',
+    },
+    boxSelected: {
+      height: '100px',
+      cursor: 'pointer',
+      display: 'flex',
+      border: '1px groove blue',
+      borderRadius: '5px',
+      backgroundColor: 'white',
       flexDirection: 'column',
       overflow: 'hidden',
       wordWrap: 'break-word',
@@ -160,10 +172,11 @@ export default function NoteListItem(props: any) {
     }
   };
 
+  const isSelected = props.note.id === props.currentNote;
   return (
     <>
       <div
-        className={classes.box}
+        className={isSelected ? classes.boxSelected : classes.box}
         onClick={() => props.setCurrentNote(props.note.id)}
       >
         <div ref={drag} style={{ opacity }}>

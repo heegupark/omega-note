@@ -3,6 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import NoteList from './note-list';
+import EditorTitle from './editor-title';
 import Editor from './editor';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -56,6 +57,7 @@ export default function Note(props: any) {
           </DndProvider>
         </div>
         <div>
+          <EditorTitle />
           <Editor />
         </div>
       </div>

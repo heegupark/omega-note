@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import { useQuill } from 'react-quilljs';
+import 'quill/dist/quill.snow.css';
+// import ReactQuill, { Quill } from 'react-quill';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -17,42 +20,86 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function Note(props: any) {
+const theme = 'snow';
+const placeholder = 'Compose an epic...';
+const modules = {
+  toolbar: [
+    [{ header: '1' }, { header: '2' }, { font: [] }, { color: [] }],
+    [{ size: [] }],
+    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+    [
+      { list: 'ordered' },
+      { list: 'bullet' },
+      { indent: '-1' },
+      { indent: '+1' },
+    ],
+    ['link', 'image', 'video'],
+    ['clean'],
+  ],
+  clipboard: {
+    // toggle to add extra line breaks when pasting HTML:
+    matchVisual: false,
+  },
+};
+const formats = [
+  'header',
+  'font',
+  'color',
+  'size',
+  'bold',
+  'italic',
+  'underline',
+  'strike',
+  'blockquote',
+  'list',
+  'bullet',
+  'indent',
+  'link',
+  'image',
+  'video',
+];
+
+export default function Editor(props: any) {
+  const [isOpen, setOpen] = useState(false);
+  const ReactQuill =
+    typeof window === 'object' ? require('react-quill') : () => false;
+
   const classes = useStyles();
-  const editorRef = useRef() as any;
-  const [editorLoaded, setEditorLoaded] = useState(false);
-  const { CKEditor, ClassicEditor } = (editorRef.current as any) || {};
+  const { quill } = useQuill();
+  const { quillRef } = useQuill({ theme, modules, formats, placeholder });
+  const { Quill } = useQuill({ modules: { counter: true } });
+  const [contents, setContents] = useState('' as any);
 
   useEffect(() => {
-    editorRef.current = {
-      CKEditor: require('@ckeditor/ckeditor5-react'),
-      ClassicEditor: require('@ckeditor/ckeditor5-build-classic'),
-    };
-    setEditorLoaded(true);
+    setOpen(true);
   }, []);
+
+  const handleChange = (html: any) => {
+    console.log(html);
+    setContents(html);
+  };
 
   return (
     <>
-      {editorLoaded ? (
-        <CKEditor
-          editor={ClassicEditor}
-          data="<p>Hello from CKEditor 5!</p>"
-          onInit={(editor: any) => {
-            // You can store the "editor" and use when it is needed.
-            console.log('Editor is ready to use!', editor);
-          }}
-          onChange={(event: any, editor: any) => {
-            const data = editor.getData();
-            console.log({ event, editor, data });
-          }}
+      {/* <div
+        style={{
+          width: '100%',
+          height: '91vh',
+        }}
+      >
+        <div ref={quillRef} onChange={handleChange} />
+      </div> */}
+      {!!ReactQuill && isOpen && (
+        <ReactQuill
+          theme={theme}
+          onChange={handleChange}
+          value={contents}
+          modules={modules}
+          formats={formats}
+          bounds={'.app'}
+          placeholder={placeholder}
+          style={{ width: '100%', height: '91vh' }}
         />
-      ) : (
-        <>
-          <div className={classes.loading}>{'loading editor...'}</div>
-          <div className={classes.progress}>
-            <LinearProgress />
-          </div>
-        </>
       )}
     </>
   );

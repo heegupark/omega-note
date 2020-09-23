@@ -188,7 +188,6 @@ export default function Sidebar(props: any) {
         </ListItem>
         {props.notebookOrder.length > 0
           ? props.notebookOrder.map((notebook: any) => {
-              console.log(props.notebook, notebook);
               return (
                 <ListItem
                   button

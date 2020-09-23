@@ -112,7 +112,11 @@ export default function Main() {
 
   const updateNote = (notebookId: string, noteId: string, newNote: any) => {
     state.notebooks[notebookId].notes.map((note: any) => {
-      if (note.id === noteId) {
+      if (
+        note.id === noteId &&
+        ((newNote.note && newNote.note !== note.note) ||
+          (newNote.noteTitle && newNote.noteTitle !== note.noteTitle))
+      ) {
         note.noteTitle = newNote.noteTitle ? newNote.noteTitle : note.noteTitle;
         note.note = newNote.note ? newNote.note : note.note;
         note.isDeleted = newNote.isDeleted;

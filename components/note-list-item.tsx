@@ -147,6 +147,19 @@ export default function NoteListItem(props: any) {
     }`;
   };
 
+  const formatDate = (date: Date) => {
+    const createdTime = new Date(date) as any;
+    const currentTime = new Date() as any;
+    let diff = (currentTime - createdTime) / 1000;
+    if (diff <= 86400) {
+      return <Moment fromNow date={props.note.updatedAt} />;
+    } else if (diff <= 172800) {
+      return <div>Yesterday</div>;
+    } else {
+      return <Moment format="MMM D, YYYY" date={props.note.updatedAt} />;
+    }
+  };
+
   return (
     <>
       <div
@@ -158,9 +171,7 @@ export default function NoteListItem(props: any) {
           <div className={classes.noteContent}>
             {convertToString(props.note.note)}
           </div>
-          <div className={classes.date}>
-            <Moment format="MMM D, YYYY" date={props.note.updatedAt} />
-          </div>
+          <div className={classes.date}>{formatDate(props.note.updatedAt)}</div>
         </div>
       </div>
       <div style={layerStyles}>

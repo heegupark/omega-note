@@ -57,8 +57,8 @@ export default function Note(props: any) {
           </DndProvider>
         </div>
         <div>
-          <EditorTitle />
-          <Editor />
+          <EditorTitle notebooks={props.notebooks} notebook={props.notebook} />
+          <Editor notebooks={props.notebooks} notebook={props.notebook} />
         </div>
       </div>
     </>

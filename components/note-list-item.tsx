@@ -36,6 +36,8 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
     },
+    previewIcon: { marginRight: '3px', verticalAlign: 'middle' },
+    previewItem: { marginLeft: '3px' },
     noteTitle: {
       padding: '10px 20px 0px 20px',
       color: 'rgb(61,61,61)',
@@ -141,12 +143,10 @@ export default function NoteListItem(props: any) {
           style={getItemStyles(initialOffset, currentOffset, props.snapToGrid)}
         >
           <div className={classes.preview}>
-            <span
-              style={{ padding: '2px 3px 0px 3px', verticalAlign: 'middle' }}
-            >
+            <span className={classes.previewIcon}>
               <BsBook />
             </span>
-            <span style={{ padding: '0px 3px 2px 3px' }}>{itemType}</span>
+            <span className={classes.previewItem}>{itemType}</span>
           </div>
         </div>
       </div>

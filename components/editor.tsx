@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useQuill } from 'react-quilljs';
-import 'quill/dist/quill.snow.css';
 // import ReactQuill, { Quill } from 'react-quill';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -75,8 +74,10 @@ export default function Editor(props: any) {
   }, []);
 
   const handleChange = (html: any) => {
-    console.log(html);
+    console.log(props.notebooks[props.notebook].id);
+    console.log(props.notebooks[notebook].id);
     setContents(html);
+    props.updateNote(notebookId, noteId, html);
   };
 
   return (
@@ -98,7 +99,10 @@ export default function Editor(props: any) {
           formats={formats}
           bounds={'.app'}
           placeholder={placeholder}
-          style={{ width: '100%', height: '91vh' }}
+          style={{
+            width: '100%',
+            height: '90vh',
+          }}
         />
       )}
     </>

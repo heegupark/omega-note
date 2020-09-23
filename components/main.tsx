@@ -113,7 +113,7 @@ export default function Main() {
   };
 
   const updateNote = (notebookId: string, noteId: string, newNote: any) => {
-    console.log('aaa');
+    console.log('update note');
     state.notebooks[notebookId].notes.map((note: any) => {
       if (note.id === noteId) {
         note.noteTitle = newNote.noteTitle;

@@ -47,9 +47,10 @@ export default function NoteList(props: any) {
       {props.notebooks[props.notebook].notes.length > 0 ? (
         <>
           {props.notebooks[props.notebook].notes.map((note: any) => {
+            console.log(note);
             return (
               <div key={note.id}>
-                <NoteListItem noteTitle={note.noteTitle} note={note.note} />
+                <NoteListItem note={note} {...props} />
                 <Divider />
               </div>
             );

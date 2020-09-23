@@ -3,6 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { XYCoord, useDrag, useDragLayer, DragSourceMonitor } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { BsBook } from 'react-icons/bs';
+import Moment from 'react-moment';
 
 const layerStyles: React.CSSProperties = {
   position: 'fixed',
@@ -35,13 +36,12 @@ const useStyles = makeStyles((theme: Theme) =>
       cursor: 'pointer',
       display: 'flex',
       flexDirection: 'column',
+      overflow: 'hidden',
+      wordWrap: 'break-word',
+      padding: '15px',
     },
     previewIcon: { marginRight: '3px', verticalAlign: 'middle' },
     previewItem: { marginLeft: '3px' },
-    noteTitle: {
-      padding: '10px 20px 0px 20px',
-      color: 'rgb(61,61,61)',
-    },
     preview: {
       border: '1px solid rgb(186,223,229)',
       borderRadius: '3px',
@@ -51,9 +51,18 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: 'rgb(248,248,248,0.6)',
       padding: '10px',
     },
-    noteContent: {
-      padding: '5px 20px',
+    noteTitle: {
+      color: 'rgb(61,61,61)',
       fontSize: '14px',
+    },
+    noteContent: {
+      fontSize: '12px',
+      color: 'rgb(115,115,115)',
+      overflow: 'hidden',
+      height: '35px',
+    },
+    date: {
+      fontSize: '11px',
       color: 'rgb(115,115,115)',
     },
     empty: {
@@ -77,7 +86,7 @@ export default function NoteListItem(props: any) {
   const classes = useStyles();
 
   const [{ opacity }, drag, preview] = useDrag({
-    item: { type: props.noteTitle },
+    item: { type: props.note.noteTitle },
     collect: (monitor: DragSourceMonitor) => ({
       opacity: monitor.isDragging() ? 0.4 : 1,
       isDragging: monitor.isDragging(),
@@ -130,12 +139,28 @@ export default function NoteListItem(props: any) {
     isDragging: monitor.isDragging(),
   }));
 
+  const convertToString = (string: any) => {
+    const limit = 30;
+    const convertedString = string.replace(/(<([^>]+)>)/gi, '');
+    return `${convertedString.substring(0, limit)}${
+      convertedString.length > limit ? '...' : ''
+    }`;
+  };
+
   return (
     <>
-      <div className={classes.box}>
+      <div
+        className={classes.box}
+        onClick={() => props.setCurrentNote(props.note.id)}
+      >
         <div ref={drag} style={{ opacity }}>
-          <div className={classes.noteTitle}>{props.noteTitle}</div>
-          <div className={classes.noteContent}>{props.note}</div>
+          <div className={classes.noteTitle}>{props.note.noteTitle}</div>
+          <div className={classes.noteContent}>
+            {convertToString(props.note.note)}
+          </div>
+          <div className={classes.date}>
+            <Moment format="MMM D, YYYY" date={props.note.updatedAt} />
+          </div>
         </div>
       </div>
       <div style={layerStyles}>

@@ -26,6 +26,7 @@ export default function Main() {
   const [message, setMessage] = useState('' as any);
   const [severity, setSeverity] = useState('success' as any);
   const [notebook, setNotebook] = useState('notebook-0');
+  const [currentNote, setCurrentNote] = useState('note-0');
   const [state, setState] = useState({
     notebooks: {
       'notebook-0': {
@@ -33,19 +34,17 @@ export default function Main() {
         title: 'Work',
         notes: [
           {
-            id: uuidv4(),
+            id: 'note-0',
             noteTitle: 'Tech interview',
-            note: 'Amazon interview',
-            dragging: false,
+            note: '<p>I need to prepare interview!</p>',
             isDeleted: false,
             createdAt: new Date(2020, 8, 10),
             updatedAt: new Date(2020, 8, 10),
           },
           {
-            id: uuidv4(),
+            id: 'note-1',
             noteTitle: 'Meet up',
-            note: 'Google',
-            dragging: false,
+            note: '<p>Fun meet up!</p>',
             isDeleted: false,
             createdAt: new Date(2020, 8, 11),
             updatedAt: new Date(2020, 8, 11),
@@ -59,10 +58,9 @@ export default function Main() {
         title: 'Personal',
         notes: [
           {
-            id: uuidv4(),
+            id: 'note-0',
             noteTitle: 'Pay Utilities',
-            note: '',
-            dragging: false,
+            note: '<p>I need to pay gas today!</p>',
             isDeleted: false,
             createdAt: new Date(2020, 8, 11),
             updatedAt: new Date(2020, 8, 11),
@@ -113,12 +111,10 @@ export default function Main() {
   };
 
   const updateNote = (notebookId: string, noteId: string, newNote: any) => {
-    console.log('update note');
     state.notebooks[notebookId].notes.map((note: any) => {
       if (note.id === noteId) {
-        note.noteTitle = newNote.noteTitle;
-        note.note = newNote.note;
-        note.dragging = newNote.dragging;
+        note.noteTitle = newNote.noteTitle ? newNote.noteTitle : note.noteTitle;
+        note.note = newNote.note ? newNote.note : note.note;
         note.isDeleted = newNote.isDeleted;
         note.updatedAt = new Date();
       }
@@ -132,7 +128,6 @@ export default function Main() {
     <>
       <div className={classes.root}>
         <CssBaseline />
-
         <Sidebar
           notebooks={state.notebooks}
           notebookOrder={state.notebookOrder}
@@ -148,6 +143,8 @@ export default function Main() {
           addNewNote={addNewNote}
           open={open}
           updateNote={updateNote}
+          currentNote={currentNote}
+          setCurrentNote={setCurrentNote}
         />
         <Snackbar
           open={open}

@@ -47,18 +47,12 @@ export default function Note(props: any) {
       <div className={classes.root}>
         <div className={classes.box}>
           <DndProvider backend={HTML5Backend}>
-            <NoteList
-              notebooks={props.notebooks}
-              notebookOrder={props.notebookOrder}
-              notebook={props.notebook}
-              addNewNote={props.addNewNote}
-              updateNote={props.updateNote}
-            />
+            <NoteList {...props} />
           </DndProvider>
         </div>
         <div>
-          <EditorTitle notebooks={props.notebooks} notebook={props.notebook} />
-          <Editor notebooks={props.notebooks} notebook={props.notebook} />
+          <EditorTitle {...props} />
+          <Editor {...props} />
         </div>
       </div>
     </>

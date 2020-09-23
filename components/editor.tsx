@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { useQuill } from 'react-quilljs';
 // import ReactQuill, { Quill } from 'react-quill';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -62,11 +61,8 @@ export default function Editor(props: any) {
   const [isOpen, setOpen] = useState(false);
   const ReactQuill =
     typeof window === 'object' ? require('react-quill') : () => false;
-
   const classes = useStyles();
-  const { quill } = useQuill();
-  const { quillRef } = useQuill({ theme, modules, formats, placeholder });
-  const { Quill } = useQuill({ modules: { counter: true } });
+  const [title, setTitle] = useState('' as any);
   const [contents, setContents] = useState('' as any);
 
   useEffect(() => {
@@ -74,22 +70,32 @@ export default function Editor(props: any) {
   }, []);
 
   const handleChange = (html: any) => {
-    console.log(props.notebooks[props.notebook].id);
-    console.log(props.notebooks[notebook].id);
     setContents(html);
-    props.updateNote(notebookId, noteId, html);
+    const newNote = {
+      // noteTitle: title,
+      note: html,
+    };
+    props.updateNote(
+      props.notebooks[props.notebook].id,
+      props.currentNote,
+      newNote
+    );
   };
+
+  const getNote = (notebookId: string, noteId: string) => {
+    const newContents = props.notebooks[notebookId].notes.filter(
+      (note: any) => note.id === noteId
+    );
+    setTitle(newContents[0].noteTitle);
+    setContents(newContents[0].note);
+  };
+
+  useEffect(() => {
+    getNote(props.notebook, props.currentNote);
+  }, [props.currentNote]);
 
   return (
     <>
-      {/* <div
-        style={{
-          width: '100%',
-          height: '91vh',
-        }}
-      >
-        <div ref={quillRef} onChange={handleChange} />
-      </div> */}
       {!!ReactQuill && isOpen && (
         <ReactQuill
           theme={theme}
@@ -101,7 +107,8 @@ export default function Editor(props: any) {
           placeholder={placeholder}
           style={{
             width: '100%',
-            height: '90vh',
+            maxWidth: '800px',
+            height: '89vh',
           }}
         />
       )}

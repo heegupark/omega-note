@@ -16,8 +16,14 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
     },
     title: {
-      padding: '10px',
+      padding: '10px 15px',
       fontSize: '22px',
+      wordBreak: 'break-word',
+    },
+    noteCount: {
+      fontSize: '12px',
+      padding: '10px 15px',
+      color: 'rgb(107,107,107)',
     },
     empty: {
       alignItems: 'center',
@@ -39,16 +45,30 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function NoteList(props: any) {
   const classes = useStyles();
 
+  const convertTitle = (title: string, length: number) => {
+    return title.length > length ? title.substring(0, length) + '...' : title;
+  };
+
+  const noteCount = props.notebooks[props.notebook].notes.length;
   return (
     <div className={classes.root}>
-      <div className={classes.title}>title</div>
+      <div className={classes.title}>
+        {convertTitle(props.notebooks[props.notebook].title, 15)}
+      </div>
+      <div className={classes.noteCount}>{`${noteCount} note${
+        noteCount > 1 ? 's' : ''
+      }`}</div>
       <Divider />
       {props.notebooks[props.notebook].notes.length > 0 ? (
         <>
           {props.notebooks[props.notebook].notes.map((note: any) => {
             return (
               <div key={note.id}>
-                <NoteListItem note={note} {...props} />
+                <NoteListItem
+                  note={note}
+                  {...props}
+                  convertTitle={convertTitle}
+                />
                 <Divider />
               </div>
             );

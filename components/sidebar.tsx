@@ -126,7 +126,6 @@ export default function Sidebar(props: any) {
 
   const handleDrawerToggle = () => {
     setOpen(!open);
-    props.setOpen(!open);
   };
 
   return (

@@ -137,7 +137,6 @@ export default function Main() {
           notebookOrder={state.notebookOrder}
           notebook={notebook}
           addNewNote={addNewNote}
-          setOpen={setOpen}
           setNotebook={setNotebook}
         />
         <Note

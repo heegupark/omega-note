@@ -959,6 +959,45 @@ body {
 }
 
 .ql-editor {
-  height: 85vh;
+  height: 91vh;
+}
+
+@media (max-width: 1199.98px) {
+  .ql-editor {
+    height: 89vh;
+  }
+}
+
+@media (max-width: 991.98px) {
+}
+
+@media (max-width: 880px) {
+  .ql-editor {
+    height: 86vh;
+  }
+}
+
+@media (max-width: 725px) {
+  .ql-editor {
+    height: 85vh;
+  }
+}
+
+@media (max-width: 724px) {
+  .ql-editor {
+    height: 81vh;
+  }
+}
+
+@media (max-width: 575.98px) {
+}
+
+@media (max-height: 375px) {
+}
+
+@media (max-width: 320px) {
+}
+
+@media (max-width: 260px) {
 }
 

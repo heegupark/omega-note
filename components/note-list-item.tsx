@@ -180,7 +180,9 @@ export default function NoteListItem(props: any) {
         onClick={() => props.setCurrentNote(props.note.id)}
       >
         <div ref={drag} style={{ opacity }}>
-          <div className={classes.noteTitle}>{props.note.noteTitle}</div>
+          <div className={classes.noteTitle}>
+            {props.convertTitle(props.note.noteTitle, 20)}
+          </div>
           <div className={classes.noteContent}>
             {convertToString(props.note.note)}
           </div>

@@ -5,19 +5,19 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    loading: {
-      margin: '20px 20px 0px 20px',
-    },
-    progress: {
+    title: {
+      outline: 'none',
       width: '100%',
-      margin: '20px 20px 0px 20px',
-      '& > * + *': {
-        marginTop: theme.spacing(2),
-      },
+      paddingLeft: '15px',
+      margin: '0px',
+      border: 'none',
+      backgroundColor: 'rgb(248,248,248)',
+      fontSize: '24px',
     },
     editor: {
       width: '100%',
-      maxWidth: '800px',
+      minWidth: '400px',
+      wordBreak: 'break-word',
       '&:hover': {
         backgroundColor: 'white',
       },
@@ -42,7 +42,6 @@ const modules = {
     ['clean'],
   ],
   clipboard: {
-    // toggle to add extra line breaks when pasting HTML:
     matchVisual: false,
   },
 };
@@ -61,7 +60,7 @@ const formats = [
   'indent',
   'link',
   'image',
-  'video',
+  // 'video',
 ];
 
 export default function Editor(props: any) {
@@ -79,7 +78,6 @@ export default function Editor(props: any) {
   const handleChange = (html: any) => {
     setContents(html);
     const newNote = {
-      // noteTitle: title,
       note: html,
     };
     props.updateNote(
@@ -101,8 +99,25 @@ export default function Editor(props: any) {
     getNote(props.notebook, props.currentNote);
   }, [props.currentNote]);
 
+  const handleTitleChange = (e: any) => {
+    setTitle(e.target.value);
+    const newNote = {
+      noteTitle: e.target.value,
+    };
+    props.updateNote(
+      props.notebooks[props.notebook].id,
+      props.currentNote,
+      newNote
+    );
+  };
+
   return (
     <>
+      <input
+        value={title}
+        className={classes.title}
+        onChange={(e: any) => handleTitleChange(e)}
+      />
       {!!ReactQuill && isOpen && (
         <ReactQuill
           theme={theme}

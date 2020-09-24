@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { CgNotes } from 'react-icons/cg';
 import Divider from '@material-ui/core/Divider';
@@ -22,8 +22,15 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     noteCount: {
       fontSize: '12px',
-      padding: '10px 15px',
+      padding: '5px 15px',
       color: 'rgb(107,107,107)',
+    },
+    date: {
+      fontSize: '10px',
+      paddingLeft: '10px',
+    },
+    listBox: {
+      overflowY: 'scroll',
     },
     empty: {
       alignItems: 'center',
@@ -55,12 +62,17 @@ export default function NoteList(props: any) {
       <div className={classes.title}>
         {convertTitle(props.notebooks[props.notebook].title, 15)}
       </div>
-      <div className={classes.noteCount}>{`${noteCount} note${
-        noteCount > 1 ? 's' : ''
-      }`}</div>
+
+      <div className={classes.noteCount}>
+        {`${noteCount} note${noteCount > 1 ? 's' : ''}`}
+        <span className={classes.date}>
+          {'Last edited on '}
+          {props.formatDate(props.notebooks[props.notebook].updatedAt)}
+        </span>
+      </div>
       <Divider />
       {props.notebooks[props.notebook].notes.length > 0 ? (
-        <>
+        <div className={classes.listBox}>
           {props.notebooks[props.notebook].notes.map((note: any) => {
             return (
               <div key={note.id}>
@@ -73,7 +85,7 @@ export default function NoteList(props: any) {
               </div>
             );
           })}
-        </>
+        </div>
       ) : (
         <div className={classes.empty}>
           <div className={classes.emptyIcon}>

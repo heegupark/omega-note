@@ -7,6 +7,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { v4 as uuidv4 } from 'uuid';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
+import Moment from 'react-moment';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -81,20 +82,25 @@ export default function Main() {
   } as any);
 
   useEffect(() => {
-    setCurrentNote(state.notebooks[state.notebookOrder[0]].notes[0].id);
+    setCurrentNote(
+      state.notebooks[notebook].notes.length > 0
+        ? state.notebooks[notebook].notes[0].id
+        : ''
+    );
   }, []);
 
   const addNewNote = (title: string, note: string) => {
     const newNote = {
       id: uuidv4(),
-      noteTitle: 'Untitled',
-      note: '',
+      noteTitle: title ? title : 'Untitled',
+      note: note ? note : '',
       dragging: false,
       isDeleted: false,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
     state.notebooks[notebook].notes.unshift(newNote);
+    updateDate(notebook, null);
     handleSnackbar(`A note is created`, 'info');
     setState({
       ...state,
@@ -127,9 +133,65 @@ export default function Main() {
         note.updatedAt = new Date();
       }
     });
+    state.notebooks[notebookId].updatedAt = new Date();
     setState({
       ...state,
     } as any);
+  };
+
+  const updateDate = (notebookId: any, noteId: any) => {
+    if (noteId) {
+      state.notebooks[notebookId].notes.map((note: any) => {
+        if (note.id === noteId) {
+          note.updatedAt = new Date();
+        }
+      });
+    }
+    state.notebooks[notebookId].updatedAt = new Date();
+    setState({
+      ...state,
+    } as any);
+  };
+
+  const moveNote = (origin: string, destination: string, noteId: string) => {
+    let tempNote = null as any;
+    state.notebooks[origin].notes.map((note: any, index: any) => {
+      if (note.id === noteId) {
+        if (destination === 'trash') note.isDeleted = true;
+        tempNote = note;
+        state.notebooks[origin].notes.splice(index, 1);
+      }
+    });
+    if (destination === 'trash') {
+      state.trash.notes.push(tempNote);
+      state.trash.updatedAt = new Date();
+    } else {
+      state.notebooks[destination].notes.push(tempNote);
+      state.notebooks[destination].updatedAt = new Date();
+    }
+    setCurrentNote(
+      state.notebooks[notebook].notes.length > 0
+        ? state.notebooks[notebook].notes[0].id
+        : ''
+    );
+    updateDate(origin, noteId);
+    handleSnackbar(`A note is moved to trash`, 'warning');
+    setState({
+      ...state,
+    } as any);
+  };
+
+  const formatDate = (date: Date) => {
+    const createdTime = new Date(date) as any;
+    const currentTime = new Date() as any;
+    let diff = (currentTime - createdTime) / 1000;
+    if (diff <= 86400) {
+      return <Moment fromNow date={date} />;
+    } else if (diff <= 172800) {
+      return <div>Yesterday</div>;
+    } else {
+      return <Moment format="MMM D, YYYY" date={new Date(date)} />;
+    }
   };
 
   return (
@@ -153,6 +215,8 @@ export default function Main() {
           updateNote={updateNote}
           currentNote={currentNote}
           setCurrentNote={setCurrentNote}
+          formatDate={formatDate}
+          moveNote={moveNote}
         />
         <Snackbar
           open={open}

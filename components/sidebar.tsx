@@ -76,7 +76,6 @@ const useStyles = makeStyles((theme: Theme) =>
       bottom: '0',
       right: '0',
       padding: theme.spacing(0, 1),
-      // necessary for content to be below app bar
       ...theme.mixins.toolbar,
     },
     folder: {
@@ -130,7 +129,11 @@ export default function Sidebar(props: any) {
 
   const handleNotebookClick = (notebook: string) => {
     props.setNotebook(props.notebooks[notebook].id);
-    props.setCurrentNote(props.notebooks[notebook].notes[0].id);
+    props.setCurrentNote(
+      props.notebooks[notebook].notes.length > 0
+        ? props.notebooks[notebook].notes[0].id
+        : ''
+    );
   };
 
   return (

@@ -1,13 +1,14 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import LinearProgress from '@material-ui/core/LinearProgress';
-// import ReactQuill, { Quill } from 'react-quill';
+import { HiDotsHorizontal } from 'react-icons/hi';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {
       outline: 'none',
-      width: '100%',
+      width: '95%',
       paddingLeft: '15px',
       margin: '0px',
       border: 'none',
@@ -22,6 +23,13 @@ const useStyles = makeStyles((theme: Theme) =>
       '&:hover': {
         backgroundColor: 'white',
       },
+    },
+    dot: {
+      position: 'absolute',
+      float: 'right',
+      right: '20px',
+      cursor: 'pointer',
+      marginTop: '10px',
     },
   })
 );
@@ -71,6 +79,15 @@ export default function Editor(props: any) {
   const classes = useStyles();
   const [title, setTitle] = useState('' as any);
   const [contents, setContents] = useState('' as any);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   useEffect(() => {
     setOpen(true);
@@ -89,7 +106,6 @@ export default function Editor(props: any) {
   };
 
   const getNote = (notebookId: string, noteId: string) => {
-    console.log(notebookId, props.currentNote);
     const newContents = props.notebooks[notebookId].notes.filter(
       (note: any) => note.id === noteId
     );
@@ -113,6 +129,11 @@ export default function Editor(props: any) {
     );
   };
 
+  const handleMoveToTrash = () => {
+    props.moveNote(props.notebook, 'trash', props.currentNote);
+    handleClose();
+  };
+
   return (
     <>
       <input
@@ -120,6 +141,18 @@ export default function Editor(props: any) {
         className={classes.title}
         onChange={(e: any) => handleTitleChange(e)}
       />
+      <Menu
+        id="dot-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleMoveToTrash}>Move to trash</MenuItem>
+      </Menu>
+      <span className={classes.dot} onClick={handleClick}>
+        <HiDotsHorizontal />
+      </span>
       {!!ReactQuill && isOpen && (
         <ReactQuill
           theme={theme}

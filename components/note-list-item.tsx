@@ -3,7 +3,6 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { XYCoord, useDrag, useDragLayer, DragSourceMonitor } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { BsBook } from 'react-icons/bs';
-import Moment from 'react-moment';
 
 const layerStyles: React.CSSProperties = {
   position: 'fixed',
@@ -159,19 +158,6 @@ export default function NoteListItem(props: any) {
     }`;
   };
 
-  const formatDate = (date: Date) => {
-    const createdTime = new Date(date) as any;
-    const currentTime = new Date() as any;
-    let diff = (currentTime - createdTime) / 1000;
-    if (diff <= 86400) {
-      return <Moment fromNow date={props.note.updatedAt} />;
-    } else if (diff <= 172800) {
-      return <div>Yesterday</div>;
-    } else {
-      return <Moment format="MMM D, YYYY" date={props.note.updatedAt} />;
-    }
-  };
-
   const isSelected = props.note.id === props.currentNote;
   return (
     <>
@@ -186,7 +172,9 @@ export default function NoteListItem(props: any) {
           <div className={classes.noteContent}>
             {convertToString(props.note.note)}
           </div>
-          <div className={classes.date}>{formatDate(props.note.updatedAt)}</div>
+          <div className={classes.date}>
+            {props.formatDate(props.note.updatedAt)}
+          </div>
         </div>
       </div>
       <div style={layerStyles}>

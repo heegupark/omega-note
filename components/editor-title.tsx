@@ -26,12 +26,24 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       verticalAlign: 'middle',
     },
+    date: {
+      position: 'absolute',
+      float: 'right',
+      fontSize: '12px',
+      top: '10px',
+      right: '20px',
+    },
   })
 );
 
 export default function EditorTitle(props: any) {
   const classes = useStyles();
-
+  let updateAt = null;
+  props.notebooks[props.notebook].notes.map((note: any) => {
+    if (note.id === props.currentNote) {
+      updateAt = note.updatedAt;
+    }
+  });
   return (
     <div className={classes.root}>
       <span className={classes.style}>
@@ -39,6 +51,12 @@ export default function EditorTitle(props: any) {
         <span className={classes.title}>
           {props.notebooks[props.notebook].title}
         </span>
+        {props.currentNote && (
+          <span className={classes.date}>
+            {'Last edited on '}
+            {props.formatDate(updateAt)}
+          </span>
+        )}
       </span>
     </div>
   );

@@ -24,10 +24,10 @@ function Alert(props: AlertProps) {
 export default function Main() {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState('' as any);
-  const [severity, setSeverity] = useState('success' as any);
-  const [notebook, setNotebook] = useState('notebook-0');
-  const [currentNote, setCurrentNote] = useState('' as any);
+  const [message, setMessage] = useState<string>('');
+  const [severity, setSeverity] = useState<any>('success');
+  const [notebook, setNotebook] = useState<string>('notebook-0');
+  const [currentNote, setCurrentNote] = useState<string>('');
   const [state, setState] = useState({
     notebooks: {
       'notebook-0': {
@@ -39,6 +39,7 @@ export default function Main() {
             noteTitle: 'Tech interview',
             note: '<p>I need to prepare interview!</p>',
             isDeleted: false,
+            lastNotebook: '',
             createdAt: new Date(2020, 8, 10),
             updatedAt: new Date(2020, 8, 10),
           },
@@ -144,14 +145,19 @@ export default function Main() {
     state.notebooks[notebookId].updatedAt = new Date();
     setState({
       ...state,
-    } as any);
+    });
   };
 
   const moveNote = (origin: string, destination: string, noteId: string) => {
-    let tempNote = null as any;
+    let tempNote = null;
     state.notebooks[origin].notes.map((note: any, index: any) => {
       if (note.id === noteId) {
-        if (destination === 'trash') note.isDeleted = true;
+        if (destination === 'trash') {
+          note.isDeleted = true;
+        } else {
+          note.isDeleted = false;
+        }
+        note.lastNotebook = origin;
         tempNote = note;
         state.notebooks[origin].notes.splice(index, 1);
       }
@@ -164,15 +170,44 @@ export default function Main() {
         : ''
     );
     updateDate(origin, noteId);
-    handleSnackbar(`A note is moved to trash`, 'warning');
+    if (destination === 'trash') {
+      handleSnackbar(
+        `A note is moved to ${state.notebooks[destination].title}`,
+        'warning'
+      );
+    } else {
+      handleSnackbar(
+        `A note is restored to ${state.notebooks[destination].title}`,
+        'success'
+      );
+    }
     setState({
       ...state,
-    } as any);
+    });
+  };
+
+  const deleteNote = (notebookId: string, noteId: string) => {
+    state.notebooks[notebookId].notes.filter((note: any, index: any) => {
+      if (note.id === noteId) {
+        state.notebooks[notebookId].notes.splice(index, 1);
+      }
+    });
+    state.notebooks[notebookId].updatedAt = new Date();
+    setCurrentNote(
+      state.notebooks[notebook].notes.length > 0
+        ? state.notebooks[notebook].notes[0].id
+        : ''
+    );
+    updateDate(notebookId, noteId);
+    handleSnackbar(`A note is permanently deleted`, 'error');
+    setState({
+      ...state,
+    });
   };
 
   const formatDate = (date: Date) => {
-    const createdTime = new Date(date) as any;
-    const currentTime = new Date() as any;
+    const createdTime: any = new Date(date);
+    const currentTime: any = new Date();
     let diff = (currentTime - createdTime) / 1000;
     if (diff <= 86400) {
       return <Moment fromNow date={date} />;
@@ -189,42 +224,51 @@ export default function Main() {
     setOpen(true);
   };
 
+  const handleNotebookClick = (notebook: string) => {
+    setNotebook(notebook);
+    setCurrentNote(
+      state.notebooks[notebook].notes.length > 0
+        ? state.notebooks[notebook].notes[0].id
+        : ''
+    );
+  };
+
   return (
-    <>
-      <div className={classes.root}>
-        <CssBaseline />
-        <Sidebar
-          notebooks={state.notebooks}
-          notebookOrder={state.notebookOrder}
-          notebook={notebook}
-          addNewNote={addNewNote}
-          setNotebook={setNotebook}
-          setCurrentNote={setCurrentNote}
-        />
-        <Note
-          notebooks={state.notebooks}
-          notebookOrder={state.notebookOrder}
-          notebook={notebook}
-          addNewNote={addNewNote}
-          open={open}
-          updateNote={updateNote}
-          currentNote={currentNote}
-          setCurrentNote={setCurrentNote}
-          formatDate={formatDate}
-          moveNote={moveNote}
-          handleSnackbar={handleSnackbar}
-        />
-        <Snackbar
-          open={open}
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          autoHideDuration={1000}
-          onClose={handleClose}
-        >
-          <Alert onClose={handleClose} severity={severity}>
-            {message}
-          </Alert>
-        </Snackbar>
-      </div>
-    </>
+    <div className={classes.root}>
+      <CssBaseline />
+      <Sidebar
+        notebooks={state.notebooks}
+        notebookOrder={state.notebookOrder}
+        notebook={notebook}
+        addNewNote={addNewNote}
+        setNotebook={setNotebook}
+        setCurrentNote={setCurrentNote}
+        handleNotebookClick={handleNotebookClick}
+      />
+      <Note
+        notebooks={state.notebooks}
+        notebookOrder={state.notebookOrder}
+        notebook={notebook}
+        addNewNote={addNewNote}
+        open={open}
+        updateNote={updateNote}
+        currentNote={currentNote}
+        setCurrentNote={setCurrentNote}
+        formatDate={formatDate}
+        moveNote={moveNote}
+        handleSnackbar={handleSnackbar}
+        deleteNote={deleteNote}
+      />
+      <Snackbar
+        open={open}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        autoHideDuration={1000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity={severity}>
+          {message}
+        </Alert>
+      </Snackbar>
+    </div>
   );
 }

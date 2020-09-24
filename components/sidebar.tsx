@@ -127,15 +127,6 @@ export default function Sidebar(props: any) {
     setOpen(!open);
   };
 
-  const handleNotebookClick = (notebook: string) => {
-    props.setNotebook(props.notebooks[notebook].id);
-    props.setCurrentNote(
-      props.notebooks[notebook].notes.length > 0
-        ? props.notebooks[notebook].notes[0].id
-        : ''
-    );
-  };
-
   return (
     <Drawer
       variant="permanent"
@@ -204,7 +195,7 @@ export default function Sidebar(props: any) {
                       ? classes.listSelected
                       : classes.list
                   }
-                  onClick={() => handleNotebookClick(notebook)}
+                  onClick={() => props.handleNotebookClick(notebook)}
                   style={{
                     padding: open ? '0px 0px 0px 40px' : '0px 15px',
                   }}
@@ -223,7 +214,7 @@ export default function Sidebar(props: any) {
           button
           key="Trash"
           className={classes.folder}
-          onClick={() => handleNotebookClick('trash')}
+          onClick={() => props.handleNotebookClick('trash')}
           style={{ padding: open ? '0px 10px' : '0px 15px' }}
         >
           <ListItemIcon>

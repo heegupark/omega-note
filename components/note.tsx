@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function Note(props: any) {
   const classes = useStyles();
-
+  console.log(props.currentNote);
   return (
     <>
       <div className={classes.root}>

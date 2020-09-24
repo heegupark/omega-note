@@ -3,6 +3,8 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { HiDotsHorizontal } from 'react-icons/hi';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import Modal from '@material-ui/core/Modal';
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,6 +38,25 @@ const useStyles = makeStyles((theme: Theme) =>
       right: '20px',
       cursor: 'pointer',
       marginTop: '10px',
+    },
+    modal: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    paper: {
+      backgroundColor: 'rgb(222, 222, 222)',
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(1, 2, 2),
+      textAlign: 'center',
+      width: '350px',
+      borderRadius: '5px',
+      fontSize: '12px',
+      outline: 'none',
+    },
+    button: {
+      height: '30px',
+      margin: '10px 15px',
     },
   })
 );
@@ -83,16 +104,27 @@ export default function Editor(props: any) {
   const ReactQuill =
     typeof window === 'object' ? require('react-quill') : () => false;
   const classes = useStyles();
-  const [title, setTitle] = useState('' as any);
-  const [isDelete, setIsDeleted] = useState(false as boolean);
-  const [contents, setContents] = useState('' as any);
+  const [title, setTitle] = useState<any | HTMLElement>('');
+  const [isDelete, setIsDeleted] = useState<boolean | HTMLElement>(false);
+  const [contents, setContents] = useState<any | HTMLElement>('');
+  const [lastNotebook, setLastNotebook] = useState<string | HTMLElement>('');
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [modalOpen, setModalOpen] = React.useState(false);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleModalOpen = () => {
+    handlePopoverClose();
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
+
+  const handlePopoverOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handlePopoverClose = () => {
     setAnchorEl(null);
   };
 
@@ -119,6 +151,7 @@ export default function Editor(props: any) {
     setTitle(newContents[0].noteTitle);
     setContents(newContents[0].note);
     setIsDeleted(newContents[0].isDeleted);
+    setLastNotebook(newContents[0].lastNotebook);
   };
 
   useEffect(() => {
@@ -139,14 +172,25 @@ export default function Editor(props: any) {
 
   const handleMoveToTrash = () => {
     props.moveNote(props.notebook, 'trash', props.currentNote);
-    handleClose();
+    handlePopoverClose();
+  };
+
+  const handleRestore = () => {
+    props.moveNote('trash', lastNotebook, props.currentNote);
+    handlePopoverClose();
+  };
+
+  const handleDelete = () => {
+    props.deleteNote('trash', props.currentNote);
+    handlePopoverClose();
+    handleModalClose();
   };
 
   return (
     <>
       {isDelete ? (
         <>
-          <div
+          <span
             className={classes.title}
             onClick={() =>
               props.handleSnackbar(
@@ -156,7 +200,20 @@ export default function Editor(props: any) {
             }
           >
             {title}
-          </div>
+          </span>
+          <Menu
+            id="dot-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handlePopoverClose}
+          >
+            <MenuItem onClick={handleRestore}>Restore</MenuItem>
+            <MenuItem onClick={handleModalOpen}>Delete</MenuItem>
+          </Menu>
+          <span className={classes.dot} onClick={handlePopoverOpen}>
+            <HiDotsHorizontal />
+          </span>
           <div
             className={classes.editorInTrash}
             dangerouslySetInnerHTML={{ __html: contents }}
@@ -167,6 +224,35 @@ export default function Editor(props: any) {
               )
             }
           />
+          <Modal
+            open={modalOpen}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+            className={classes.modal}
+          >
+            <div className={classes.paper}>
+              <h2 id="simple-modal-title">Are you really want to delete?</h2>
+              <p id="simple-modal-description">
+                You will permanently delete this note.
+              </p>
+              <Button
+                className={classes.button}
+                variant="outlined"
+                color="secondary"
+                onClick={handleDelete}
+              >
+                Delete
+              </Button>
+              <Button
+                className={classes.button}
+                variant="outlined"
+                color="default"
+                onClick={handleModalClose}
+              >
+                Cancel
+              </Button>
+            </div>
+          </Modal>
         </>
       ) : (
         <>
@@ -180,11 +266,11 @@ export default function Editor(props: any) {
             anchorEl={anchorEl}
             keepMounted
             open={Boolean(anchorEl)}
-            onClose={handleClose}
+            onClose={handlePopoverClose}
           >
             <MenuItem onClick={handleMoveToTrash}>Move to trash</MenuItem>
           </Menu>
-          <span className={classes.dot} onClick={handleClick}>
+          <span className={classes.dot} onClick={handlePopoverOpen}>
             <HiDotsHorizontal />
           </span>
           {!!ReactQuill && isOpen && (

@@ -223,6 +223,7 @@ export default function Sidebar(props: any) {
           button
           key="Trash"
           className={classes.folder}
+          onClick={() => handleNotebookClick('trash')}
           style={{ padding: open ? '0px 10px' : '0px 15px' }}
         >
           <ListItemIcon>

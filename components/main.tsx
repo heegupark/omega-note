@@ -35,7 +35,7 @@ export default function Main() {
         title: 'Work',
         notes: [
           {
-            id: 'note-0',
+            id: 'note-00',
             noteTitle: 'Tech interview',
             note: '<p>I need to prepare interview!</p>',
             isDeleted: false,
@@ -43,7 +43,7 @@ export default function Main() {
             updatedAt: new Date(2020, 8, 10),
           },
           {
-            id: 'note-1',
+            id: 'note-01',
             noteTitle: 'Meet up',
             note: '<p>Fun meet up!</p>',
             isDeleted: false,
@@ -59,7 +59,7 @@ export default function Main() {
         title: 'Personal',
         notes: [
           {
-            id: 'note-0',
+            id: 'note-10',
             noteTitle: 'Pay Utilities',
             note: '<p>I need to pay gas today!</p>',
             isDeleted: false,
@@ -70,15 +70,15 @@ export default function Main() {
         createdAt: new Date(2020, 8, 1),
         updatedAt: new Date(2020, 8, 11),
       },
+      trash: {
+        id: 'trash',
+        title: 'Trash',
+        notes: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     },
     notebookOrder: ['notebook-0', 'notebook-1'],
-    trash: {
-      id: 'trash',
-      title: 'Trash',
-      notes: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
   } as any);
 
   useEffect(() => {
@@ -112,12 +112,6 @@ export default function Main() {
       return;
     }
     setOpen(false);
-  };
-
-  const handleSnackbar = (message: string, severity: any) => {
-    setMessage(message);
-    setSeverity(severity);
-    setOpen(true);
   };
 
   const updateNote = (notebookId: string, noteId: string, newNote: any) => {
@@ -162,13 +156,8 @@ export default function Main() {
         state.notebooks[origin].notes.splice(index, 1);
       }
     });
-    if (destination === 'trash') {
-      state.trash.notes.push(tempNote);
-      state.trash.updatedAt = new Date();
-    } else {
-      state.notebooks[destination].notes.push(tempNote);
-      state.notebooks[destination].updatedAt = new Date();
-    }
+    state.notebooks[destination].notes.push(tempNote);
+    state.notebooks[destination].updatedAt = new Date();
     setCurrentNote(
       state.notebooks[notebook].notes.length > 0
         ? state.notebooks[notebook].notes[0].id
@@ -194,6 +183,12 @@ export default function Main() {
     }
   };
 
+  const handleSnackbar = (message: string, severity: any) => {
+    setMessage(message);
+    setSeverity(severity);
+    setOpen(true);
+  };
+
   return (
     <>
       <div className={classes.root}>
@@ -217,6 +212,7 @@ export default function Main() {
           setCurrentNote={setCurrentNote}
           formatDate={formatDate}
           moveNote={moveNote}
+          handleSnackbar={handleSnackbar}
         />
         <Snackbar
           open={open}

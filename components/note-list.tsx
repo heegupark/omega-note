@@ -1,6 +1,7 @@
 import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { CgNotes } from 'react-icons/cg';
+import { FaRegTrashAlt } from 'react-icons/fa';
 import Divider from '@material-ui/core/Divider';
 import NoteListItem from './note-list-item';
 
@@ -57,21 +58,21 @@ export default function NoteList(props: any) {
   };
 
   const noteCount = props.notebooks[props.notebook].notes.length;
+  const notebookTitle = props.notebooks[props.notebook].title;
+  const notebookUpdatedAt = props.notebooks[props.notebook].updatedAt;
   return (
     <div className={classes.root}>
-      <div className={classes.title}>
-        {convertTitle(props.notebooks[props.notebook].title, 15)}
-      </div>
+      <div className={classes.title}>{convertTitle(notebookTitle, 15)}</div>
 
       <div className={classes.noteCount}>
         {`${noteCount} note${noteCount > 1 ? 's' : ''}`}
         <span className={classes.date}>
           {'Last edited on '}
-          {props.formatDate(props.notebooks[props.notebook].updatedAt)}
+          {props.formatDate(notebookUpdatedAt)}
         </span>
       </div>
       <Divider />
-      {props.notebooks[props.notebook].notes.length > 0 ? (
+      {noteCount > 0 ? (
         <div className={classes.listBox}>
           {props.notebooks[props.notebook].notes.map((note: any) => {
             return (
@@ -88,20 +89,31 @@ export default function NoteList(props: any) {
         </div>
       ) : (
         <div className={classes.empty}>
-          <div className={classes.emptyIcon}>
-            <CgNotes />
-          </div>
-          <div>It all begins with notes</div>
-          <div>
-            Click the{' '}
-            <span
-              onClick={() => props.addNewNote()}
-              className={classes.newNoteText}
-            >
-              + New Note
-            </span>{' '}
-            button in the side bar to create note.
-          </div>
+          {props.notebook === 'trash' ? (
+            <>
+              <div className={classes.emptyIcon}>
+                <FaRegTrashAlt />
+              </div>
+              <div>Trash is Empty</div>
+            </>
+          ) : (
+            <>
+              <div className={classes.emptyIcon}>
+                <CgNotes />
+              </div>
+              <div>It all begins with notes</div>
+              <div>
+                Click the{' '}
+                <span
+                  onClick={() => props.addNewNote()}
+                  className={classes.newNoteText}
+                >
+                  + New Note
+                </span>{' '}
+                button in the side bar to create note.
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>

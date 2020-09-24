@@ -24,6 +24,12 @@ const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: 'white',
       },
     },
+    editorInTrash: {
+      width: '100%',
+      minWidth: '600px',
+      wordBreak: 'break-word',
+      padding: '15px',
+    },
     dot: {
       position: 'absolute',
       float: 'right',
@@ -78,6 +84,7 @@ export default function Editor(props: any) {
     typeof window === 'object' ? require('react-quill') : () => false;
   const classes = useStyles();
   const [title, setTitle] = useState('' as any);
+  const [isDelete, setIsDeleted] = useState(false as boolean);
   const [contents, setContents] = useState('' as any);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -111,6 +118,7 @@ export default function Editor(props: any) {
     );
     setTitle(newContents[0].noteTitle);
     setContents(newContents[0].note);
+    setIsDeleted(newContents[0].isDeleted);
   };
 
   useEffect(() => {
@@ -136,34 +144,62 @@ export default function Editor(props: any) {
 
   return (
     <>
-      <input
-        value={title}
-        className={classes.title}
-        onChange={(e: any) => handleTitleChange(e)}
-      />
-      <Menu
-        id="dot-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
-        <MenuItem onClick={handleMoveToTrash}>Move to trash</MenuItem>
-      </Menu>
-      <span className={classes.dot} onClick={handleClick}>
-        <HiDotsHorizontal />
-      </span>
-      {!!ReactQuill && isOpen && (
-        <ReactQuill
-          theme={theme}
-          onChange={handleChange}
-          value={contents}
-          modules={modules}
-          formats={formats}
-          bounds={'.app'}
-          placeholder={placeholder}
-          className={classes.editor}
-        />
+      {isDelete ? (
+        <>
+          <div
+            className={classes.title}
+            onClick={() =>
+              props.handleSnackbar(
+                'You can not update a note title in the Trash',
+                'error'
+              )
+            }
+          >
+            {title}
+          </div>
+          <div
+            className={classes.editorInTrash}
+            dangerouslySetInnerHTML={{ __html: contents }}
+            onClick={() =>
+              props.handleSnackbar(
+                'You can not update a note in the Trash',
+                'error'
+              )
+            }
+          />
+        </>
+      ) : (
+        <>
+          <input
+            value={title}
+            className={classes.title}
+            onChange={(e: any) => handleTitleChange(e)}
+          />
+          <Menu
+            id="dot-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            <MenuItem onClick={handleMoveToTrash}>Move to trash</MenuItem>
+          </Menu>
+          <span className={classes.dot} onClick={handleClick}>
+            <HiDotsHorizontal />
+          </span>
+          {!!ReactQuill && isOpen && (
+            <ReactQuill
+              theme={theme}
+              onChange={handleChange}
+              value={contents}
+              modules={modules}
+              formats={formats}
+              bounds={'.app'}
+              placeholder={placeholder}
+              className={classes.editor}
+            />
+          )}
+        </>
       )}
     </>
   );

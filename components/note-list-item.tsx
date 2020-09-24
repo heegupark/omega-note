@@ -165,17 +165,31 @@ export default function NoteListItem(props: any) {
         className={isSelected ? classes.boxSelected : classes.box}
         onClick={() => props.setCurrentNote(props.note.id)}
       >
-        <div ref={drag} style={{ opacity }}>
-          <div className={classes.noteTitle}>
-            {props.convertTitle(props.note.noteTitle, 20)}
+        {props.note.isDeleted ? (
+          <div>
+            <div className={classes.noteTitle}>
+              {props.convertTitle(props.note.noteTitle, 20)}
+            </div>
+            <div className={classes.noteContent}>
+              {convertToString(props.note.note)}
+            </div>
+            <div className={classes.date}>
+              {props.formatDate(props.note.updatedAt)}
+            </div>
           </div>
-          <div className={classes.noteContent}>
-            {convertToString(props.note.note)}
+        ) : (
+          <div ref={drag} style={{ opacity }}>
+            <div className={classes.noteTitle}>
+              {props.convertTitle(props.note.noteTitle, 20)}
+            </div>
+            <div className={classes.noteContent}>
+              {convertToString(props.note.note)}
+            </div>
+            <div className={classes.date}>
+              {props.formatDate(props.note.updatedAt)}
+            </div>
           </div>
-          <div className={classes.date}>
-            {props.formatDate(props.note.updatedAt)}
-          </div>
-        </div>
+        )}
       </div>
       <div style={layerStyles}>
         <div

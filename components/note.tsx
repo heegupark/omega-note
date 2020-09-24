@@ -52,7 +52,7 @@ export default function Note(props: any) {
         </div>
         <div>
           <EditorTitle {...props} />
-          <Editor {...props} />
+          {props.currentNote && <Editor {...props} />}
         </div>
       </div>
     </>

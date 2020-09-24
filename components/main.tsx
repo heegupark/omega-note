@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // import Disclaimer from './disclaimer';
 import Sidebar from './sidebar';
 import Note from './note';
@@ -26,7 +26,7 @@ export default function Main() {
   const [message, setMessage] = useState('' as any);
   const [severity, setSeverity] = useState('success' as any);
   const [notebook, setNotebook] = useState('notebook-0');
-  const [currentNote, setCurrentNote] = useState('note-0');
+  const [currentNote, setCurrentNote] = useState('' as any);
   const [state, setState] = useState({
     notebooks: {
       'notebook-0': {
@@ -79,6 +79,10 @@ export default function Main() {
       updatedAt: new Date(),
     },
   } as any);
+
+  useEffect(() => {
+    setCurrentNote(state.notebooks[state.notebookOrder[0]].notes[0].id);
+  }, []);
 
   const addNewNote = (title: string, note: string) => {
     const newNote = {
@@ -138,6 +142,7 @@ export default function Main() {
           notebook={notebook}
           addNewNote={addNewNote}
           setNotebook={setNotebook}
+          setCurrentNote={setCurrentNote}
         />
         <Note
           notebooks={state.notebooks}

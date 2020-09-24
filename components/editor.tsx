@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       minWidth: '400px',
       wordBreak: 'break-word',
+      paddingBottom: '10px',
       '&:hover': {
         backgroundColor: 'white',
       },
@@ -88,6 +89,7 @@ export default function Editor(props: any) {
   };
 
   const getNote = (notebookId: string, noteId: string) => {
+    console.log(notebookId, props.currentNote);
     const newContents = props.notebooks[notebookId].notes.filter(
       (note: any) => note.id === noteId
     );
@@ -97,7 +99,7 @@ export default function Editor(props: any) {
 
   useEffect(() => {
     getNote(props.notebook, props.currentNote);
-  }, [props.currentNote]);
+  }, [props.notebook, props.currentNote]);
 
   const handleTitleChange = (e: any) => {
     setTitle(e.target.value);

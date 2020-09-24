@@ -18,7 +18,7 @@ body {
 
 @media (max-width: 1199.98px) {
   .ql-editor {
-    height: 89vh;
+    height: 85vh;
   }
 }
 
@@ -27,19 +27,19 @@ body {
 
 @media (max-width: 880px) {
   .ql-editor {
-    height: 86vh;
+    height: 85vh;
   }
 }
 
 @media (max-width: 725px) {
   .ql-editor {
-    height: 85vh;
+    height: 81vh;
   }
 }
 
 @media (max-width: 724px) {
   .ql-editor {
-    height: 81vh;
+    height: 85vh;
   }
 }
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -6,7 +6,6 @@ import NoteList from './note-list';
 import EditorTitle from './editor-title';
 import Editor from './editor';
 import INoteProps from './interfaces/inoteprops';
-import INote from './interfaces/inote';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,9 +52,7 @@ export default function Note(props: INoteProps) {
         </div>
         <div>
           <EditorTitle {...props} />
-          {props.currentNoteId && (
-            <Editor key={props.currentNoteId} {...props} />
-          )}
+          {props.currentNoteId && <Editor {...props} />}
         </div>
       </div>
     </>

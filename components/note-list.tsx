@@ -62,6 +62,7 @@ export default function NoteList(props: INoteProps) {
   const noteCount = props.notebooks[props.notebook].notes.length;
   const notebookTitle = props.notebooks[props.notebook].title;
   const notebookUpdatedAt = props.notebooks[props.notebook].updatedAt;
+
   return (
     <div className={classes.root}>
       <div className={classes.title}>{convertTitle(notebookTitle, 15)}</div>

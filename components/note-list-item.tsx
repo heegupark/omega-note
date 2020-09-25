@@ -3,11 +3,6 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { XYCoord, useDrag, useDragLayer, DragSourceMonitor } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { BsBook } from 'react-icons/bs';
-import { HiDotsHorizontal } from 'react-icons/hi';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import Modal from '@material-ui/core/Modal';
-import Button from '@material-ui/core/Button';
 import INote from './interfaces/inote';
 import INoteProps from './interfaces/inoteprops';
 
@@ -213,22 +208,6 @@ export default function NoteListItem(props: NoteListProps) {
     }`;
   };
 
-  const handleMoveToTrash = () => {
-    props.moveNote(props.notebook, 'trash', props.currentNoteId);
-    handlePopoverClose();
-  };
-
-  const handleRestore = () => {
-    props.moveNote('trash', props.note.lastNotebook, props.currentNoteId);
-    handlePopoverClose();
-  };
-
-  const handleDelete = () => {
-    props.deleteNote('trash', props.currentNoteId);
-    handlePopoverClose();
-    handleModalClose();
-  };
-
   const isSelected = props.note.id === props.currentNoteId;
   return (
     <>
@@ -246,23 +225,6 @@ export default function NoteListItem(props: NoteListProps) {
           <div>
             <div className={classes.noteTitle}>
               {props.convertTitle(props.note.noteTitle, 20)}
-              {showDotMenu && (
-                <>
-                  <Menu
-                    id="dot-menu"
-                    anchorEl={anchorEl}
-                    keepMounted
-                    open={Boolean(anchorEl)}
-                    onClose={handlePopoverClose}
-                  >
-                    <MenuItem onClick={handleRestore}>Restore</MenuItem>
-                    <MenuItem onClick={handleModalOpen}>Delete</MenuItem>
-                  </Menu>
-                  <span className={classes.dot} onClick={handlePopoverOpen}>
-                    <HiDotsHorizontal />
-                  </span>
-                </>
-              )}
             </div>
             <div className={classes.noteContent}>
               {convertToString(props.note.note)}
@@ -270,58 +232,11 @@ export default function NoteListItem(props: NoteListProps) {
             <div className={classes.date}>
               {props.formatDate(props.note.updatedAt)}
             </div>
-            <Modal
-              open={modalOpen}
-              aria-labelledby="simple-modal-title"
-              aria-describedby="simple-modal-description"
-              className={classes.modal}
-            >
-              <div className={classes.paper}>
-                <h2 id="simple-modal-title">Are you really want to delete?</h2>
-                <p id="simple-modal-description">
-                  You will permanently delete this note.
-                </p>
-                <Button
-                  className={classes.button}
-                  variant="outlined"
-                  color="secondary"
-                  onClick={handleDelete}
-                >
-                  Delete
-                </Button>
-                <Button
-                  className={classes.button}
-                  variant="outlined"
-                  color="default"
-                  onClick={handleModalClose}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </Modal>
           </div>
         ) : (
           <div ref={drag} style={{ opacity }}>
             <div className={classes.noteTitle}>
               {props.convertTitle(props.note.noteTitle, 20)}
-              {showDotMenu && (
-                <>
-                  <Menu
-                    id="dot-menu"
-                    anchorEl={anchorEl}
-                    keepMounted
-                    open={Boolean(anchorEl)}
-                    onClose={handlePopoverClose}
-                  >
-                    <MenuItem onClick={handleMoveToTrash}>
-                      Move to trash
-                    </MenuItem>
-                  </Menu>
-                  <span className={classes.dot} onClick={handlePopoverOpen}>
-                    <HiDotsHorizontal />
-                  </span>
-                </>
-              )}
             </div>
             <div className={classes.noteContent}>
               {convertToString(props.note.note)}

@@ -151,7 +151,6 @@ export default function Editor(props: INoteProps) {
     const newContents = props.notebooks[notebookId].notes.filter(
       (note: INote) => note.id === noteId
     );
-    console.log(newContents);
     setTitle(newContents[0].noteTitle);
     setContents(newContents[0].note);
     setIsDeleted(newContents[0].isDeleted);
@@ -191,7 +190,6 @@ export default function Editor(props: INoteProps) {
     handleModalClose();
   };
 
-  console.log(title);
   return (
     <>
       {isDeleted ? (

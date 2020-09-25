@@ -4,6 +4,8 @@ import { CgNotes } from 'react-icons/cg';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import Divider from '@material-ui/core/Divider';
 import NoteListItem from './note-list-item';
+import INote from './interfaces/inote';
+import INoteProps from './interfaces/inoteprops';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -50,7 +52,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function NoteList(props: any) {
+export default function NoteList(props: INoteProps) {
   const classes = useStyles();
 
   const convertTitle = (title: string, length: number) => {
@@ -74,7 +76,7 @@ export default function NoteList(props: any) {
       <Divider />
       {noteCount > 0 ? (
         <div className={classes.listBox}>
-          {props.notebooks[props.notebook].notes.map((note: any) => {
+          {props.notebooks[props.notebook].notes.map((note: INote) => {
             return (
               <div key={note.id}>
                 <NoteListItem
@@ -105,7 +107,7 @@ export default function NoteList(props: any) {
               <div>
                 Click the{' '}
                 <span
-                  onClick={() => props.addNewNote()}
+                  onClick={() => props.addNewNote('', '')}
                   className={classes.newNoteText}
                 >
                   + New Note

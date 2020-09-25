@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { FiBook } from 'react-icons/fi';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import INoteProps from './interfaces/inoteprops';
+import INote from './interfaces/inote';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,11 +38,34 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function EditorTitle(props: any) {
+interface Note {
+  id: string;
+  noteTitle: string;
+  note: string;
+  isDeleted: boolean;
+  lastNotebook: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface Notebook {
+  notebooks: {
+    [id: string]: {
+      id: string;
+      title: string;
+      notes: Array<Note>;
+      createdAt: Date;
+      updatedAt: Date;
+    };
+  };
+  notebookOrder: Array<string>;
+}
+
+export default function EditorTitle(props: INoteProps) {
   const classes = useStyles();
-  let updateAt = null;
-  props.notebooks[props.notebook].notes.map((note: any) => {
-    if (note.id === props.currentNote) {
+  let updateAt = new Date();
+  props.notebooks[props.notebook].notes.map((note: INote) => {
+    if (note.id === props.currentNoteId) {
       updateAt = note.updatedAt;
     }
   });
@@ -51,7 +76,7 @@ export default function EditorTitle(props: any) {
         <span className={classes.title}>
           {props.notebooks[props.notebook].title}
         </span>
-        {props.currentNote && (
+        {props.currentNoteId && (
           <span className={classes.date}>
             {'Last edited on '}
             {props.formatDate(updateAt)}

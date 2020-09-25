@@ -8,6 +8,9 @@ import { v4 as uuidv4 } from 'uuid';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import Moment from 'react-moment';
+import INote from './interfaces/inote';
+import IUpdateNote from './interfaces/iupdatemote';
+import INotebooks from './interfaces/inotebooks';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,12 +26,12 @@ function Alert(props: AlertProps) {
 
 export default function Main() {
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('');
   const [severity, setSeverity] = useState<any>('success');
   const [notebook, setNotebook] = useState<string>('notebook-0');
-  const [currentNote, setCurrentNote] = useState<string>('');
-  const [state, setState] = useState({
+  const [currentNoteId, setCurrentNoteId] = useState<string | undefined>('');
+  const [state, setState] = useState<INotebooks>({
     notebooks: {
       'notebook-0': {
         id: 'notebook-0',
@@ -48,6 +51,7 @@ export default function Main() {
             noteTitle: 'Meet up',
             note: '<p>Fun meet up!</p>',
             isDeleted: false,
+            lastNotebook: '',
             createdAt: new Date(2020, 8, 11),
             updatedAt: new Date(2020, 8, 11),
           },
@@ -64,6 +68,7 @@ export default function Main() {
             noteTitle: 'Pay Utilities',
             note: '<p>I need to pay gas today!</p>',
             isDeleted: false,
+            lastNotebook: '',
             createdAt: new Date(2020, 8, 11),
             updatedAt: new Date(2020, 8, 11),
           },
@@ -80,14 +85,10 @@ export default function Main() {
       },
     },
     notebookOrder: ['notebook-0', 'notebook-1'],
-  } as any);
+  });
 
   useEffect(() => {
-    setCurrentNote(
-      state.notebooks[notebook].notes.length > 0
-        ? state.notebooks[notebook].notes[0].id
-        : ''
-    );
+    setCurrentNoteIdByNotebook(notebook);
   }, []);
 
   const addNewNote = (title: string, note: string) => {
@@ -97,15 +98,16 @@ export default function Main() {
       note: note ? note : '',
       dragging: false,
       isDeleted: false,
+      lastNotebook: '',
       createdAt: new Date(),
       updatedAt: new Date(),
     };
     state.notebooks[notebook].notes.unshift(newNote);
-    updateDate(notebook, null);
+    updateDate(notebook, undefined);
     handleSnackbar(`A note is created`, 'info');
     setState({
       ...state,
-    } as any);
+    });
   };
 
   const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
@@ -115,8 +117,12 @@ export default function Main() {
     setOpen(false);
   };
 
-  const updateNote = (notebookId: string, noteId: string, newNote: any) => {
-    state.notebooks[notebookId].notes.map((note: any) => {
+  const updateNote = (
+    notebookId: string,
+    noteId: string | undefined,
+    newNote: IUpdateNote
+  ) => {
+    state.notebooks[notebookId].notes.map((note: INote) => {
       if (
         note.id === noteId &&
         ((newNote.note && newNote.note !== note.note) ||
@@ -124,7 +130,7 @@ export default function Main() {
       ) {
         note.noteTitle = newNote.noteTitle ? newNote.noteTitle : note.noteTitle;
         note.note = newNote.note ? newNote.note : note.note;
-        note.isDeleted = newNote.isDeleted;
+        // note.isDeleted = newNote.isDeleted;
         note.updatedAt = new Date();
       }
     });
@@ -134,9 +140,9 @@ export default function Main() {
     } as any);
   };
 
-  const updateDate = (notebookId: any, noteId: any) => {
+  const updateDate = (notebookId: string, noteId: string | undefined) => {
     if (noteId) {
-      state.notebooks[notebookId].notes.map((note: any) => {
+      state.notebooks[notebookId].notes.map((note: INote) => {
         if (note.id === noteId) {
           note.updatedAt = new Date();
         }
@@ -148,9 +154,13 @@ export default function Main() {
     });
   };
 
-  const moveNote = (origin: string, destination: string, noteId: string) => {
-    let tempNote = null;
-    state.notebooks[origin].notes.map((note: any, index: any) => {
+  const moveNote = (
+    origin: string,
+    destination: string,
+    noteId: string | undefined
+  ) => {
+    let tempNote: INote = {} as INote;
+    state.notebooks[origin].notes.map((note: INote, index: number) => {
       if (note.id === noteId) {
         if (destination === 'trash') {
           note.isDeleted = true;
@@ -164,11 +174,9 @@ export default function Main() {
     });
     state.notebooks[destination].notes.push(tempNote);
     state.notebooks[destination].updatedAt = new Date();
-    setCurrentNote(
-      state.notebooks[notebook].notes.length > 0
-        ? state.notebooks[notebook].notes[0].id
-        : ''
-    );
+    setCurrentNoteIdByNotebook(origin);
+    console.log(origin, destination, noteId);
+    //notebook-0 trash note-00
     updateDate(origin, noteId);
     if (destination === 'trash') {
       handleSnackbar(
@@ -186,18 +194,14 @@ export default function Main() {
     });
   };
 
-  const deleteNote = (notebookId: string, noteId: string) => {
-    state.notebooks[notebookId].notes.filter((note: any, index: any) => {
+  const deleteNote = (notebookId: string, noteId: string | undefined) => {
+    state.notebooks[notebookId].notes.filter((note: INote, index: number) => {
       if (note.id === noteId) {
         state.notebooks[notebookId].notes.splice(index, 1);
       }
     });
     state.notebooks[notebookId].updatedAt = new Date();
-    setCurrentNote(
-      state.notebooks[notebook].notes.length > 0
-        ? state.notebooks[notebook].notes[0].id
-        : ''
-    );
+    setCurrentNoteIdByNotebook(notebookId);
     updateDate(notebookId, noteId);
     handleSnackbar(`A note is permanently deleted`, 'error');
     setState({
@@ -206,9 +210,9 @@ export default function Main() {
   };
 
   const formatDate = (date: Date) => {
-    const createdTime: any = new Date(date);
-    const currentTime: any = new Date();
-    let diff = (currentTime - createdTime) / 1000;
+    const createdTime: number = new Date(date).valueOf();
+    const currentTime: number = new Date().valueOf();
+    let diff: number = (currentTime - createdTime) / 1000;
     if (diff <= 86400) {
       return <Moment fromNow date={date} />;
     } else if (diff <= 172800) {
@@ -218,18 +222,22 @@ export default function Main() {
     }
   };
 
-  const handleSnackbar = (message: string, severity: any) => {
+  const handleSnackbar = (message: string, severity: string) => {
     setMessage(message);
     setSeverity(severity);
     setOpen(true);
   };
 
-  const handleNotebookClick = (notebook: string) => {
-    setNotebook(notebook);
-    setCurrentNote(
-      state.notebooks[notebook].notes.length > 0
-        ? state.notebooks[notebook].notes[0].id
-        : ''
+  const handleNotebookClick = (notebookId: string) => {
+    setNotebook(notebookId);
+    setCurrentNoteIdByNotebook(notebookId);
+  };
+
+  const setCurrentNoteIdByNotebook = (notebookId: string) => {
+    setCurrentNoteId(
+      state.notebooks[notebookId].notes.length > 0
+        ? state.notebooks[notebookId].notes[0].id
+        : undefined
     );
   };
 
@@ -242,7 +250,7 @@ export default function Main() {
         notebook={notebook}
         addNewNote={addNewNote}
         setNotebook={setNotebook}
-        setCurrentNote={setCurrentNote}
+        setCurrentNoteId={setCurrentNoteId}
         handleNotebookClick={handleNotebookClick}
       />
       <Note
@@ -252,8 +260,8 @@ export default function Main() {
         addNewNote={addNewNote}
         open={open}
         updateNote={updateNote}
-        currentNote={currentNote}
-        setCurrentNote={setCurrentNote}
+        currentNoteId={currentNoteId}
+        setCurrentNoteId={setCurrentNoteId}
         formatDate={formatDate}
         moveNote={moveNote}
         handleSnackbar={handleSnackbar}

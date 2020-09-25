@@ -8,6 +8,8 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
+import INote from './interfaces/inote';
+import INoteProps from './interfaces/inoteprops';
 
 const layerStyles: React.CSSProperties = {
   position: 'fixed',
@@ -121,7 +123,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function NoteListItem(props: any) {
+interface NoteListProps extends INoteProps {
+  note: INote;
+  convertTitle: (title: string, length: number) => string;
+}
+
+export default function NoteListItem(props: NoteListProps) {
   const [showDotMenu, setShowDotMenu] = useState(false);
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -207,27 +214,27 @@ export default function NoteListItem(props: any) {
   };
 
   const handleMoveToTrash = () => {
-    props.moveNote(props.notebook, 'trash', props.currentNote);
+    props.moveNote(props.notebook, 'trash', props.currentNoteId);
     handlePopoverClose();
   };
 
   const handleRestore = () => {
-    props.moveNote('trash', props.note.lastNotebook, props.currentNote);
+    props.moveNote('trash', props.note.lastNotebook, props.currentNoteId);
     handlePopoverClose();
   };
 
   const handleDelete = () => {
-    props.deleteNote('trash', props.currentNote);
+    props.deleteNote('trash', props.currentNoteId);
     handlePopoverClose();
     handleModalClose();
   };
 
-  const isSelected = props.note.id === props.currentNote;
+  const isSelected = props.note.id === props.currentNoteId;
   return (
     <>
       <div
         className={isSelected ? classes.boxSelected : classes.box}
-        onClick={() => props.setCurrentNote(props.note.id)}
+        onClick={() => props.setCurrentNoteId(props.note.id)}
         onMouseEnter={() => {
           setShowDotMenu(true);
         }}
@@ -326,9 +333,7 @@ export default function NoteListItem(props: any) {
         )}
       </div>
       <div style={layerStyles}>
-        <div
-          style={getItemStyles(initialOffset, currentOffset, props.snapToGrid)}
-        >
+        <div style={getItemStyles(initialOffset, currentOffset, false)}>
           <div className={classes.preview}>
             <span className={classes.previewIcon}>
               <BsBook />

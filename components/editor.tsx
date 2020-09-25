@@ -5,6 +5,8 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
+import INote from './interfaces/inote';
+import INoteProps from './interfaces/inoteprops';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -99,15 +101,15 @@ const formats = [
   // 'video',
 ];
 
-export default function Editor(props: any) {
+export default function Editor(props: INoteProps) {
   const [isOpen, setOpen] = useState(false);
   const ReactQuill =
     typeof window === 'object' ? require('react-quill') : () => false;
   const classes = useStyles();
-  const [title, setTitle] = useState<any | HTMLElement>('');
-  const [isDelete, setIsDeleted] = useState<boolean | HTMLElement>(false);
-  const [contents, setContents] = useState<any | HTMLElement>('');
-  const [lastNotebook, setLastNotebook] = useState<string | HTMLElement>('');
+  const [title, setTitle] = useState<string>('');
+  const [isDeleted, setIsDeleted] = useState<boolean>(false);
+  const [contents, setContents] = useState<string>('');
+  const [lastNotebook, setLastNotebook] = useState<string>('');
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [modalOpen, setModalOpen] = React.useState(false);
 
@@ -132,22 +134,24 @@ export default function Editor(props: any) {
     setOpen(true);
   }, []);
 
-  const handleChange = (html: any) => {
+  const handleChange = (html: string) => {
     setContents(html);
     const newNote = {
+      noteTitle: undefined,
       note: html,
     };
     props.updateNote(
       props.notebooks[props.notebook].id,
-      props.currentNote,
+      props.currentNoteId,
       newNote
     );
   };
 
-  const getNote = (notebookId: string, noteId: string) => {
+  const getNote = (notebookId: string, noteId: string | undefined) => {
     const newContents = props.notebooks[notebookId].notes.filter(
-      (note: any) => note.id === noteId
+      (note: INote) => note.id === noteId
     );
+    console.log(newContents);
     setTitle(newContents[0].noteTitle);
     setContents(newContents[0].note);
     setIsDeleted(newContents[0].isDeleted);
@@ -155,40 +159,42 @@ export default function Editor(props: any) {
   };
 
   useEffect(() => {
-    getNote(props.notebook, props.currentNote);
-  }, [props.notebook, props.currentNote]);
+    getNote(props.notebook, props.currentNoteId);
+  }, [props.notebook, props.currentNoteId]);
 
-  const handleTitleChange = (e: any) => {
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
     const newNote = {
       noteTitle: e.target.value,
+      note: undefined,
     };
     props.updateNote(
       props.notebooks[props.notebook].id,
-      props.currentNote,
+      props.currentNoteId,
       newNote
     );
   };
 
   const handleMoveToTrash = () => {
-    props.moveNote(props.notebook, 'trash', props.currentNote);
+    props.moveNote(props.notebook, 'trash', props.currentNoteId);
     handlePopoverClose();
   };
 
   const handleRestore = () => {
-    props.moveNote('trash', lastNotebook, props.currentNote);
+    props.moveNote('trash', lastNotebook, props.currentNoteId);
     handlePopoverClose();
   };
 
   const handleDelete = () => {
-    props.deleteNote('trash', props.currentNote);
+    props.deleteNote('trash', props.currentNoteId);
     handlePopoverClose();
     handleModalClose();
   };
 
+  console.log(title);
   return (
     <>
-      {isDelete ? (
+      {isDeleted ? (
         <>
           <span
             className={classes.title}
@@ -259,7 +265,9 @@ export default function Editor(props: any) {
           <input
             value={title}
             className={classes.title}
-            onChange={(e: any) => handleTitleChange(e)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              handleTitleChange(e)
+            }
           />
           <Menu
             id="dot-menu"

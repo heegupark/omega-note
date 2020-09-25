@@ -14,6 +14,7 @@ import NoteRoundedIcon from '@material-ui/icons/NoteRounded';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddIcon from '@material-ui/icons/Add';
 import ImportContactsIcon from '@material-ui/icons/ImportContacts';
+import IMainProps from './interfaces/imainprops';
 
 const drawerWidth = 240;
 
@@ -119,7 +120,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function Sidebar(props: any) {
+interface SidebarProps extends IMainProps {
+  setNotebook: (notebook: string) => void;
+  handleNotebookClick: (notebookId: string) => void;
+}
+
+export default function Sidebar(props: SidebarProps) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
 
@@ -167,7 +173,7 @@ export default function Sidebar(props: any) {
           <Tooltip title="Click to add a note" arrow>
             <ListItemText
               primary="New Note"
-              onClick={() => props.addNewNote()}
+              onClick={() => props.addNewNote('', '')}
             />
           </Tooltip>
         </ListItem>

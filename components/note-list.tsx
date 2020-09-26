@@ -66,7 +66,6 @@ export default function NoteList(props: INoteProps) {
   return (
     <div className={classes.root}>
       <div className={classes.title}>{convertTitle(notebookTitle, 15)}</div>
-
       <div className={classes.noteCount}>
         {`${noteCount} note${noteCount > 1 ? 's' : ''}`}
         <span className={classes.date}>

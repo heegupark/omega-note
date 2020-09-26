@@ -46,13 +46,19 @@ export default function Note(props: INoteProps) {
     <>
       <div className={classes.root}>
         <div className={classes.box}>
-          <DndProvider backend={HTML5Backend}>
-            <NoteList {...props} />
-          </DndProvider>
+          {props.notebook && (
+            <DndProvider backend={HTML5Backend}>
+              <NoteList {...props} />
+            </DndProvider>
+          )}
         </div>
         <div>
-          <EditorTitle {...props} />
-          {props.currentNoteId && <Editor {...props} />}
+          {props.notebook && (
+            <>
+              <EditorTitle {...props} />
+              {props.currentNoteId && <Editor {...props} />}
+            </>
+          )}
         </div>
       </div>
     </>

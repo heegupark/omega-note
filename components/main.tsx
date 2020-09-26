@@ -234,11 +234,13 @@ export default function Main() {
   };
 
   const setCurrentNoteIdByNotebook = (notebookId: string) => {
-    setCurrentNoteId(
-      state.notebooks[notebookId].notes.length > 0
-        ? state.notebooks[notebookId].notes[0].id
-        : undefined
-    );
+    if (notebookId) {
+      setCurrentNoteId(
+        state.notebooks[notebookId].notes.length > 0
+          ? state.notebooks[notebookId].notes[0].id
+          : undefined
+      );
+    }
   };
 
   const addNewNotebook = (title: string) => {
@@ -259,6 +261,22 @@ export default function Main() {
     });
   };
 
+  const removeNotebook = (id: string) => {
+    const title = state.notebooks[id].title;
+    const nextNotebook =
+      state.notebookOrder.length > 0 ? state.notebookOrder[0] : '';
+    delete state.notebooks[id];
+    state.notebookOrder.splice(state.notebookOrder.indexOf(id), 1);
+    if (nextNotebook) {
+      setNotebook(nextNotebook);
+      setCurrentNoteIdByNotebook(nextNotebook);
+    }
+    handleSnackbar(`'${title}' is deleted`, 'error');
+    setState({
+      ...state,
+    });
+  };
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -271,6 +289,7 @@ export default function Main() {
         setCurrentNoteId={setCurrentNoteId}
         handleNotebookClick={handleNotebookClick}
         addNewNotebook={addNewNotebook}
+        removeNotebook={removeNotebook}
       />
       <Note
         notebooks={state.notebooks}

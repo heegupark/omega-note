@@ -15,6 +15,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import AddIcon from '@material-ui/icons/Add';
 import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 import IMainProps from './interfaces/imainprops';
+import SideBarItem from './sidebar-item';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 
 const drawerWidth = 240;
 
@@ -108,7 +110,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'white',
     },
     addNotebookIcon: {
-      color: 'rgb(165,165,165)',
+      color: 'rgb(75,165,65)',
       marginLeft: '30px',
     },
     addNote: {
@@ -135,6 +137,10 @@ const useStyles = makeStyles((theme: Theme) =>
       fontWeight: 400,
       fontSize: '1rem',
     },
+    menuNotebookIcon: {
+      color: 'rgb(51,51,51)',
+      marginLeft: '30px',
+    },
   })
 );
 
@@ -142,12 +148,13 @@ interface SidebarProps extends IMainProps {
   setNotebook: (notebook: string) => void;
   handleNotebookClick: (notebookId: string) => void;
   addNewNotebook: (title: string) => void;
+  removeNotebook: (notebook: string) => void;
 }
 
 export default function Sidebar(props: SidebarProps) {
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(true);
-  const [showButton, setShowButton] = useState<boolean>(false);
+  const [addNotebookButton, setAddNotebookButton] = useState<boolean>(false);
   const [addNotebook, setAddNotebook] = useState<boolean>(false);
   const [newNotebook, setNewNotebook] = useState<string>('');
   const handleDrawerToggle = () => {
@@ -217,44 +224,34 @@ export default function Sidebar(props: SidebarProps) {
           key="Notebooks"
           className={classes.folder}
           style={{ padding: open ? '0px 10px' : '0px 15px' }}
-          onMouseLeave={() => setShowButton(false)}
-          onMouseOver={() => setShowButton(true)}
         >
           <ListItemIcon>
             <NoteRoundedIcon className={classes.icon} />
           </ListItemIcon>
           <ListItemText primary="Notebooks" />
-          {showButton && open && (
-            <ListItemIcon
-              onClick={() => {
-                addNewNotebook();
-              }}
-            >
+          <ListItemIcon
+            onClick={() => {
+              addNewNotebook();
+            }}
+            onMouseOver={() => setAddNotebookButton(true)}
+            onMouseLeave={() => setAddNotebookButton(false)}
+          >
+            {addNotebookButton && open ? (
               <AddIcon className={classes.addNotebookIcon} />
-            </ListItemIcon>
-          )}
+            ) : (
+              <MoreHorizIcon className={classes.menuNotebookIcon} />
+            )}
+          </ListItemIcon>
         </ListItem>
         {props.notebookOrder.length > 0
           ? props.notebookOrder.map((notebook: any) => {
               return (
-                <ListItem
-                  button
-                  key={props.notebooks[notebook].id}
-                  className={
-                    props.notebook === notebook
-                      ? classes.listSelected
-                      : classes.list
-                  }
-                  onClick={() => props.handleNotebookClick(notebook)}
-                  style={{
-                    padding: open ? '0px 0px 0px 30px' : '0px 15px',
-                  }}
-                >
-                  <ListItemIcon>
-                    <ImportContactsIcon className={classes.icon} />
-                  </ListItemIcon>
-                  <ListItemText primary={props.notebooks[notebook].title} />
-                </ListItem>
+                <SideBarItem
+                  key={notebook}
+                  {...props}
+                  thisNotebook={notebook}
+                  open={open}
+                />
               );
             })
           : ''}

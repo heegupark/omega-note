@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, KeyboardEvent } from 'react';
 import clsx from 'clsx';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -101,10 +101,15 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     icon: {
+      minWidth: '35px',
       color: 'rgb(165,165,165)',
     },
     addNoteIcon: {
       color: 'white',
+    },
+    addNotebookIcon: {
+      color: 'rgb(165,165,165)',
+      marginLeft: '30px',
     },
     addNote: {
       backgroundColor: 'rgb(0,168,45)',
@@ -117,20 +122,48 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: 'auto',
       height: '40px',
     },
+    newnotebook: {
+      width: '100%',
+      padding: '10px 0px',
+      height: '30px',
+      margin: '1px 0px',
+      outline: 'none',
+      color: 'rgb(165, 165, 165)',
+      border: 'none',
+      borderBottom: '1px solid rgb(165, 165, 165)',
+      backgroundColor: 'transparent',
+      fontWeight: 400,
+      fontSize: '1rem',
+    },
   })
 );
 
 interface SidebarProps extends IMainProps {
   setNotebook: (notebook: string) => void;
   handleNotebookClick: (notebookId: string) => void;
+  addNewNotebook: (title: string) => void;
 }
 
 export default function Sidebar(props: SidebarProps) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
-
+  const [open, setOpen] = useState<boolean>(true);
+  const [showButton, setShowButton] = useState<boolean>(false);
+  const [addNotebook, setAddNotebook] = useState<boolean>(false);
+  const [newNotebook, setNewNotebook] = useState<string>('');
   const handleDrawerToggle = () => {
     setOpen(!open);
+  };
+
+  const addNewNotebook = () => {
+    setAddNotebook(true);
+  };
+
+  const handleAddNewNotebook = (e: KeyboardEvent) => {
+    if (e.key === 'Enter' && newNotebook.length > 0) {
+      props.addNewNotebook(newNotebook);
+      setAddNotebook(false);
+      setNewNotebook('');
+    }
   };
 
   return (
@@ -184,11 +217,22 @@ export default function Sidebar(props: SidebarProps) {
           key="Notebooks"
           className={classes.folder}
           style={{ padding: open ? '0px 10px' : '0px 15px' }}
+          onMouseLeave={() => setShowButton(false)}
+          onMouseOver={() => setShowButton(true)}
         >
           <ListItemIcon>
             <NoteRoundedIcon className={classes.icon} />
           </ListItemIcon>
           <ListItemText primary="Notebooks" />
+          {showButton && open && (
+            <ListItemIcon
+              onClick={() => {
+                addNewNotebook();
+              }}
+            >
+              <AddIcon className={classes.addNotebookIcon} />
+            </ListItemIcon>
+          )}
         </ListItem>
         {props.notebookOrder.length > 0
           ? props.notebookOrder.map((notebook: any) => {
@@ -203,7 +247,7 @@ export default function Sidebar(props: SidebarProps) {
                   }
                   onClick={() => props.handleNotebookClick(notebook)}
                   style={{
-                    padding: open ? '0px 0px 0px 40px' : '0px 15px',
+                    padding: open ? '0px 0px 0px 30px' : '0px 15px',
                   }}
                 >
                   <ListItemIcon>
@@ -214,6 +258,31 @@ export default function Sidebar(props: SidebarProps) {
               );
             })
           : ''}
+        {addNotebook && (
+          <ListItem
+            // onClick={() => props.handleNotebookClick(notebook)}
+            style={{
+              padding: open ? '0px 0px 0px 30px' : '0px 15px',
+            }}
+          >
+            <ListItemIcon>
+              <ImportContactsIcon className={classes.icon} />
+            </ListItemIcon>
+            <input
+              autoFocus
+              value={newNotebook}
+              placeholder="New Notebook"
+              className={classes.newnotebook}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setNewNotebook(e.target.value)
+              }
+              onKeyDown={(e: KeyboardEvent) => {
+                handleAddNewNotebook(e);
+              }}
+              onBlur={() => setAddNotebook(false)}
+            />
+          </ListItem>
+        )}
       </List>
       <List>
         <ListItem

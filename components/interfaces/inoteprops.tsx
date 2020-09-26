@@ -1,5 +1,5 @@
 import IMainProps from './imainprops';
-import INewNote from './iupdatemote';
+import INewNote from './iupdatenote';
 
 export default interface INoteProps extends IMainProps {
   currentNoteId: string | undefined;

@@ -9,8 +9,9 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import Moment from 'react-moment';
 import INote from './interfaces/inote';
-import IUpdateNote from './interfaces/iupdatemote';
+import IUpdateNote from './interfaces/iupdatenote';
 import INotebooks from './interfaces/inotebooks';
+import INotebook from './interfaces/inotebook';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -104,6 +105,7 @@ export default function Main() {
     };
     state.notebooks[notebook].notes.unshift(newNote);
     updateDate(notebook, undefined);
+    setCurrentNoteIdByNotebook(notebook);
     handleSnackbar(`A note is created`, 'info');
     setState({
       ...state,
@@ -175,8 +177,6 @@ export default function Main() {
     state.notebooks[destination].notes.push(tempNote);
     state.notebooks[destination].updatedAt = new Date();
     setCurrentNoteIdByNotebook(origin);
-    console.log(origin, destination, noteId);
-    //notebook-0 trash note-00
     updateDate(origin, noteId);
     if (destination === 'trash') {
       handleSnackbar(
@@ -241,6 +241,24 @@ export default function Main() {
     );
   };
 
+  const addNewNotebook = (title: string) => {
+    const id = uuidv4();
+    const newNotbook = {
+      id,
+      title,
+      notes: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    state.notebooks[id] = newNotbook;
+    state.notebookOrder.push(id);
+    handleNotebookClick(id);
+    handleSnackbar(`New notebook is created`, 'success');
+    setState({
+      ...state,
+    });
+  };
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -252,6 +270,7 @@ export default function Main() {
         setNotebook={setNotebook}
         setCurrentNoteId={setCurrentNoteId}
         handleNotebookClick={handleNotebookClick}
+        addNewNotebook={addNewNotebook}
       />
       <Note
         notebooks={state.notebooks}

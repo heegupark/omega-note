@@ -4,6 +4,7 @@ export default interface INote {
   note: string;
   isDeleted: boolean;
   lastNotebook: string;
+  lastNotebookTitle: string;
   createdAt: Date;
   updatedAt: Date;
 }

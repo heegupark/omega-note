@@ -6,6 +6,7 @@ import NoteList from './note-list';
 import EditorTitle from './editor-title';
 import Editor from './editor';
 import INoteProps from './interfaces/inoteprops';
+import { CgNotes } from 'react-icons/cg';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,6 +37,20 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: 'hidden',
       borderRight: '1px solid rgb(230, 230, 230)',
     },
+    empty: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      margin: 'auto',
+      textAlign: 'center',
+      padding: '35px',
+    },
+    emptyIcon: {
+      fontSize: '75px',
+    },
+    newNoteText: {
+      cursor: 'pointer',
+      color: 'rgb(0,168,45)',
+    },
   })
 );
 
@@ -46,10 +61,27 @@ export default function Note(props: INoteProps) {
     <>
       <div className={classes.root}>
         <div className={classes.box}>
-          {props.notebook && (
+          {props.notebook ? (
             <DndProvider backend={HTML5Backend}>
               <NoteList {...props} />
             </DndProvider>
+          ) : (
+            <div className={classes.empty}>
+              <div className={classes.emptyIcon}>
+                <CgNotes />
+              </div>
+              <div>It all begins with notes</div>
+              <div>
+                Click the{' '}
+                <span
+                  onClick={() => props.addNewNote('', '')}
+                  className={classes.newNoteText}
+                >
+                  + New Note
+                </span>{' '}
+                button in the side bar to create note.
+              </div>
+            </div>
           )}
         </div>
         <div>

@@ -88,6 +88,15 @@ const useStyles = makeStyles((theme: Theme) =>
         borderRadius: '3px',
       },
     },
+    folderSelected: {
+      padding: '0px 10px',
+      backgroundColor: 'rgb(64,64,64)',
+      borderRadius: '3px',
+      '&:hover': {
+        backgroundColor: 'rgb(51,51,51)',
+        borderRadius: '3px',
+      },
+    },
     listSelected: {
       backgroundColor: 'rgb(64,64,64)',
       borderRadius: '3px',
@@ -125,7 +134,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '40px',
     },
     newnotebook: {
-      width: '100%',
+      width: '70%',
       padding: '10px 0px',
       height: '30px',
       margin: '1px 0px',
@@ -147,7 +156,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface SidebarProps extends IMainProps {
   setNotebook: (notebook: string) => void;
   handleNotebookClick: (notebookId: string) => void;
-  addNewNotebook: (title: string) => void;
+  addNewNotebook: (_id: string, title: string) => void;
   removeNotebook: (notebook: string) => void;
 }
 
@@ -167,7 +176,7 @@ export default function Sidebar(props: SidebarProps) {
 
   const handleAddNewNotebook = (e: KeyboardEvent) => {
     if (e.key === 'Enter' && newNotebook.length > 0) {
-      props.addNewNotebook(newNotebook);
+      props.addNewNotebook('', newNotebook);
       setAddNotebook(false);
       setNewNotebook('');
     }
@@ -205,16 +214,23 @@ export default function Sidebar(props: SidebarProps) {
           className={classes.addNote}
           style={{ width: open ? '85%' : '70%' }}
         >
-          <ListItemIcon>
+          <ListItemIcon style={{ minWidth: '35px' }}>
             <Tooltip title="Click to add a note" arrow>
               <AddIcon className={classes.addNoteIcon} />
             </Tooltip>
           </ListItemIcon>
-          <Tooltip title="Click to add a note" arrow>
-            <ListItemText
-              primary="New Note"
-              onClick={() => props.addNewNote('', '')}
-            />
+          <Tooltip title="Click to add a notebook" arrow>
+            {props.notebook ? (
+              <ListItemText
+                primary="New Note"
+                onClick={() => props.addNewNote('', '')}
+              />
+            ) : (
+              <ListItemText
+                primary="New Notebook"
+                onClick={() => addNewNotebook()}
+              />
+            )}
           </Tooltip>
         </ListItem>
       </List>
@@ -222,7 +238,12 @@ export default function Sidebar(props: SidebarProps) {
         <ListItem
           button
           key="Notebooks"
-          className={classes.folder}
+          className={
+            props.notebook === '' ? classes.folderSelected : classes.folder
+          }
+          onClick={() => {
+            if (!addNotebookButton) props.handleNotebookClick('');
+          }}
           style={{ padding: open ? '0px 10px' : '0px 15px' }}
         >
           <ListItemIcon>
@@ -285,7 +306,9 @@ export default function Sidebar(props: SidebarProps) {
         <ListItem
           button
           key="Trash"
-          className={classes.folder}
+          className={
+            props.notebook === 'trash' ? classes.folderSelected : classes.folder
+          }
           onClick={() => props.handleNotebookClick('trash')}
           style={{ padding: open ? '0px 10px' : '0px 15px' }}
         >

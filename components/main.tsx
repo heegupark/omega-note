@@ -11,7 +11,6 @@ import Moment from 'react-moment';
 import INote from './interfaces/inote';
 import IUpdateNote from './interfaces/iupdatenote';
 import INotebooks from './interfaces/inotebooks';
-import INotebook from './interfaces/inotebook';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,6 +43,7 @@ export default function Main() {
             note: '<p>I need to prepare interview!</p>',
             isDeleted: false,
             lastNotebook: '',
+            lastNotebookTitle: '',
             createdAt: new Date(2020, 8, 10),
             updatedAt: new Date(2020, 8, 10),
           },
@@ -53,6 +53,7 @@ export default function Main() {
             note: '<p>Fun meet up!</p>',
             isDeleted: false,
             lastNotebook: '',
+            lastNotebookTitle: '',
             createdAt: new Date(2020, 8, 11),
             updatedAt: new Date(2020, 8, 11),
           },
@@ -70,6 +71,7 @@ export default function Main() {
             note: '<p>I need to pay gas today!</p>',
             isDeleted: false,
             lastNotebook: '',
+            lastNotebookTitle: '',
             createdAt: new Date(2020, 8, 11),
             updatedAt: new Date(2020, 8, 11),
           },
@@ -100,6 +102,7 @@ export default function Main() {
       dragging: false,
       isDeleted: false,
       lastNotebook: '',
+      lastNotebookTitle: '',
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -162,30 +165,39 @@ export default function Main() {
     noteId: string | undefined
   ) => {
     let tempNote: INote = {} as INote;
+    console.log(origin, destination, noteId);
     state.notebooks[origin].notes.map((note: INote, index: number) => {
       if (note.id === noteId) {
         if (destination === 'trash') {
           note.isDeleted = true;
+          note.lastNotebook = origin;
         } else {
           note.isDeleted = false;
         }
-        note.lastNotebook = origin;
         tempNote = note;
         state.notebooks[origin].notes.splice(index, 1);
       }
     });
-    state.notebooks[destination].notes.push(tempNote);
-    state.notebooks[destination].updatedAt = new Date();
-    setCurrentNoteIdByNotebook(origin);
+    let newId: string = '';
+    if (!state.notebooks[destination]) {
+      addNewNotebook(tempNote.lastNotebook, tempNote.lastNotebookTitle);
+      newId = tempNote.lastNotebook;
+    } else {
+      newId = destination;
+    }
+    console.log(newId);
+    state.notebooks[newId].notes.push(tempNote);
+    state.notebooks[newId].updatedAt = new Date();
+    handleNotebookClick(origin);
     updateDate(origin, noteId);
     if (destination === 'trash') {
       handleSnackbar(
-        `A note is moved to ${state.notebooks[destination].title}`,
+        `A note is moved to ${state.notebooks[newId].title}`,
         'warning'
       );
     } else {
       handleSnackbar(
-        `A note is restored to ${state.notebooks[destination].title}`,
+        `A note is restored to ${state.notebooks[newId].title}`,
         'success'
       );
     }
@@ -243,8 +255,8 @@ export default function Main() {
     }
   };
 
-  const addNewNotebook = (title: string) => {
-    const id = uuidv4();
+  const addNewNotebook = (_id: string, title: string) => {
+    const id = _id || uuidv4();
     const newNotbook = {
       id,
       title,
@@ -263,13 +275,25 @@ export default function Main() {
 
   const removeNotebook = (id: string) => {
     const title = state.notebooks[id].title;
-    const nextNotebook =
-      state.notebookOrder.length > 0 ? state.notebookOrder[0] : '';
+    state.notebooks[id].notes.map((note: INote) => {
+      let tempNote: INote = {} as INote;
+      note.isDeleted = true;
+      note.lastNotebook = id;
+      note.lastNotebookTitle = title;
+      tempNote = note;
+      state.notebooks['trash'].notes.push(tempNote);
+      state.notebooks['trash'].updatedAt = new Date();
+    });
     delete state.notebooks[id];
     state.notebookOrder.splice(state.notebookOrder.indexOf(id), 1);
+    const nextNotebook =
+      state.notebookOrder.length > 0 ? state.notebookOrder[0] : '';
     if (nextNotebook) {
       setNotebook(nextNotebook);
       setCurrentNoteIdByNotebook(nextNotebook);
+    } else {
+      setNotebook('');
+      setCurrentNoteIdByNotebook('');
     }
     handleSnackbar(`'${title}' is deleted`, 'error');
     setState({

@@ -151,10 +151,12 @@ export default function Editor(props: INoteProps) {
     const newContents = props.notebooks[notebookId].notes.filter(
       (note: INote) => note.id === noteId
     );
-    setTitle(newContents[0].noteTitle);
-    setContents(newContents[0].note);
-    setIsDeleted(newContents[0].isDeleted);
-    setLastNotebook(newContents[0].lastNotebook);
+    if (newContents.length) {
+      setTitle(newContents[0].noteTitle);
+      setContents(newContents[0].note);
+      setIsDeleted(newContents[0].isDeleted);
+      setLastNotebook(newContents[0].lastNotebook);
+    }
   };
 
   useEffect(() => {

@@ -344,7 +344,8 @@ export default function Sidebar(props: SidebarProps) {
           onClick={() => props.handleNotebookClick('trash')}
           style={{
             padding: open ? '0px 10px' : '0px 15px',
-            backgroundColor: isOver ? 'green' : '',
+            backgroundColor: isOver ? 'rgb(249,56,0)' : '',
+            color: isOver ? 'white' : 'rgb(123,123,123)',
             borderRadius: isOver ? '5px' : '',
           }}
           ref={drop}

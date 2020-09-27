@@ -34,10 +34,12 @@ const useStyles = makeStyles((theme: Theme) =>
       wordBreak: 'break-word',
       padding: '15px',
     },
+    box: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      width: '100%',
+    },
     dot: {
-      position: 'absolute',
-      float: 'right',
-      right: '20px',
       cursor: 'pointer',
       marginTop: '10px',
     },
@@ -195,7 +197,7 @@ export default function Editor(props: INoteProps) {
   return (
     <>
       {isDeleted ? (
-        <>
+        <div className={classes.box}>
           <span
             className={classes.title}
             onClick={() =>
@@ -259,7 +261,7 @@ export default function Editor(props: INoteProps) {
               </Button>
             </div>
           </Modal>
-        </>
+        </div>
       ) : (
         <>
           <input

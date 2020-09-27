@@ -15,11 +15,9 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'rgb(136,141,144)',
       margin: '5px 10px',
       padding: '3px 6px',
-      cursor: 'pointer',
-      '&:hover': {
-        backgroundColor: 'rgb(235,235,235)',
-        borderRadius: '5px',
-      },
+      display: 'flex',
+      justifyContent: 'space-between',
+      width: '100%',
     },
     icon: {
       marginRight: '5px',
@@ -27,10 +25,15 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       verticalAlign: 'middle',
+      cursor: 'pointer',
+      '&:hover': {
+        backgroundColor: 'rgb(235,235,235)',
+        borderRadius: '5px',
+      },
     },
     date: {
-      position: 'absolute',
-      float: 'right',
+      // position: 'absolute',
+      // float: 'right',
       fontSize: '12px',
       top: '10px',
       right: '20px',
@@ -72,10 +75,12 @@ export default function EditorTitle(props: INoteProps) {
   return (
     <div className={classes.root}>
       <span className={classes.style}>
-        <FiBook className={classes.icon} />
-        <span className={classes.title}>
-          {props.notebooks[props.notebook].title}
-        </span>
+        <div>
+          <FiBook className={classes.icon} />
+          <span className={classes.title}>
+            {props.notebooks[props.notebook].title}
+          </span>
+        </div>
         {props.currentNoteId && (
           <span className={classes.date}>
             {'Last edited on '}

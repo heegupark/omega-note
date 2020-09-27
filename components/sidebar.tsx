@@ -231,6 +231,7 @@ export default function Sidebar(props: SidebarProps) {
         <ListItem
           button
           key="add-note"
+          disabled={props.notebook === 'trash'}
           className={classes.addNote}
           style={{ width: open ? '85%' : '70%' }}
           onClick={() => {

@@ -32,8 +32,6 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     date: {
-      // position: 'absolute',
-      // float: 'right',
       fontSize: '12px',
       top: '10px',
       right: '20px',

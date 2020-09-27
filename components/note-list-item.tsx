@@ -124,30 +124,15 @@ interface NoteListProps extends INoteProps {
 }
 
 export default function NoteListItem(props: NoteListProps) {
-  const [showDotMenu, setShowDotMenu] = useState(false);
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [modalOpen, setModalOpen] = React.useState(false);
-
-  const handleModalOpen = () => {
-    handlePopoverClose();
-    setModalOpen(true);
-  };
-
-  const handleModalClose = () => {
-    setModalOpen(false);
-  };
-
-  const handlePopoverOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handlePopoverClose = () => {
-    setAnchorEl(null);
-  };
 
   const [{ opacity }, drag, preview] = useDrag({
-    item: { type: props.note.noteTitle },
+    item: {
+      id: props.note.id,
+      name: props.note.noteTitle,
+      notebook: props.notebook,
+      type: 'note',
+    },
     collect: (monitor: DragSourceMonitor) => ({
       opacity: monitor.isDragging() ? 0.4 : 1,
       isDragging: monitor.isDragging(),
@@ -214,12 +199,6 @@ export default function NoteListItem(props: NoteListProps) {
       <div
         className={isSelected ? classes.boxSelected : classes.box}
         onClick={() => props.setCurrentNoteId(props.note.id)}
-        onMouseEnter={() => {
-          setShowDotMenu(true);
-        }}
-        onMouseLeave={() => {
-          setShowDotMenu(false);
-        }}
       >
         {props.note.isDeleted ? (
           <div>
@@ -253,7 +232,7 @@ export default function NoteListItem(props: NoteListProps) {
             <span className={classes.previewIcon}>
               <BsBook />
             </span>
-            <span className={classes.previewItem}>{itemType}</span>
+            <span className={classes.previewItem}>{item?.name}</span>
           </div>
         </div>
       </div>

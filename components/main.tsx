@@ -11,6 +11,8 @@ import Moment from 'react-moment';
 import INote from './interfaces/inote';
 import IUpdateNote from './interfaces/iupdatenote';
 import INotebooks from './interfaces/inotebooks';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -304,31 +306,35 @@ export default function Main() {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <Sidebar
-        notebooks={state.notebooks}
-        notebookOrder={state.notebookOrder}
-        notebook={notebook}
-        addNewNote={addNewNote}
-        setNotebook={setNotebook}
-        setCurrentNoteId={setCurrentNoteId}
-        handleNotebookClick={handleNotebookClick}
-        addNewNotebook={addNewNotebook}
-        removeNotebook={removeNotebook}
-      />
-      <Note
-        notebooks={state.notebooks}
-        notebookOrder={state.notebookOrder}
-        notebook={notebook}
-        addNewNote={addNewNote}
-        open={open}
-        updateNote={updateNote}
-        currentNoteId={currentNoteId}
-        setCurrentNoteId={setCurrentNoteId}
-        formatDate={formatDate}
-        moveNote={moveNote}
-        handleSnackbar={handleSnackbar}
-        deleteNote={deleteNote}
-      />
+      <DndProvider backend={HTML5Backend}>
+        <Sidebar
+          notebooks={state.notebooks}
+          notebookOrder={state.notebookOrder}
+          notebook={notebook}
+          addNewNote={addNewNote}
+          setNotebook={setNotebook}
+          setCurrentNoteId={setCurrentNoteId}
+          handleNotebookClick={handleNotebookClick}
+          addNewNotebook={addNewNotebook}
+          removeNotebook={removeNotebook}
+          moveNote={moveNote}
+        />
+        <Note
+          notebooks={state.notebooks}
+          notebookOrder={state.notebookOrder}
+          notebook={notebook}
+          addNewNote={addNewNote}
+          open={open}
+          updateNote={updateNote}
+          currentNoteId={currentNoteId}
+          setCurrentNoteId={setCurrentNoteId}
+          formatDate={formatDate}
+          moveNote={moveNote}
+          handleSnackbar={handleSnackbar}
+          deleteNote={deleteNote}
+        />
+      </DndProvider>
+
       <Snackbar
         open={open}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}

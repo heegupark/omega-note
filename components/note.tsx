@@ -62,10 +62,10 @@ export default function Note(props: INoteProps) {
       <div className={classes.root}>
         <div className={classes.box}>
           {props.notebook ? (
-            <DndProvider backend={HTML5Backend}>
-              <NoteList {...props} />
-            </DndProvider>
+            // <DndProvider backend={HTML5Backend}>
+            <NoteList {...props} />
           ) : (
+            // </DndProvider>
             <div className={classes.empty}>
               <div className={classes.emptyIcon}>
                 <CgNotes />

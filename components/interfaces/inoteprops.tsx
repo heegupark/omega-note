@@ -11,10 +11,5 @@ export default interface INoteProps extends IMainProps {
     noteId: string | undefined,
     note: INewNote
   ) => void;
-  moveNote: (
-    origin: string,
-    destination: string,
-    noteId: string | undefined
-  ) => void;
   deleteNote: (origin: string, noteId: string | undefined) => void;
 }

@@ -159,6 +159,7 @@ interface SidebarProps extends IMainProps {
   handleNotebookClick: (notebookId: string) => void;
   addNewNotebook: (_id: string, title: string) => void;
   removeNotebook: (notebook: string) => void;
+  setView: (view: string) => void;
 }
 
 export default function Sidebar(props: SidebarProps) {
@@ -256,7 +257,8 @@ export default function Sidebar(props: SidebarProps) {
             props.notebook === '' ? classes.folderSelected : classes.folder
           }
           onClick={() => {
-            if (!addNotebookButton) props.handleNotebookClick('');
+            props.handleNotebookClick('');
+            props.setView('notebooks');
           }}
           style={{ padding: open ? '0px 10px' : '0px 15px' }}
         >

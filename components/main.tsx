@@ -13,6 +13,7 @@ import IUpdateNote from './interfaces/iupdatenote';
 import INotebooks from './interfaces/inotebooks';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import Notebooks from './notebooks';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,6 +30,7 @@ function Alert(props: AlertProps) {
 export default function Main() {
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
+  const [view, setView] = useState<string>('note');
   const [message, setMessage] = useState<string>('');
   const [severity, setSeverity] = useState<any>('success');
   const [notebook, setNotebook] = useState<string>('notebook-0');
@@ -167,7 +169,6 @@ export default function Main() {
     noteId: string | undefined
   ) => {
     let tempNote: INote = {} as INote;
-    console.log(origin, destination, noteId);
     state.notebooks[origin].notes.map((note: INote, index: number) => {
       if (note.id === noteId) {
         if (destination === 'trash') {
@@ -248,6 +249,7 @@ export default function Main() {
   };
 
   const handleNotebookClick = (notebookId: string) => {
+    setView('note');
     setNotebook(notebookId);
     setCurrentNoteIdByNotebook(notebookId);
   };
@@ -274,7 +276,7 @@ export default function Main() {
     state.notebooks[id] = newNotbook;
     state.notebookOrder.push(id);
     handleNotebookClick(id);
-    handleSnackbar(`New notebook is created`, 'success');
+    handleSnackbar(`Successfully created '${title}'`, 'success');
     setState({
       ...state,
     });
@@ -323,23 +325,31 @@ export default function Main() {
           addNewNotebook={addNewNotebook}
           removeNotebook={removeNotebook}
           moveNote={moveNote}
+          setView={setView}
         />
-        <Note
-          notebooks={state.notebooks}
-          notebookOrder={state.notebookOrder}
-          notebook={notebook}
-          addNewNote={addNewNote}
-          open={open}
-          updateNote={updateNote}
-          currentNoteId={currentNoteId}
-          setCurrentNoteId={setCurrentNoteId}
-          formatDate={formatDate}
-          moveNote={moveNote}
-          handleSnackbar={handleSnackbar}
-          deleteNote={deleteNote}
-        />
+        {view === 'notebooks' ? (
+          <Notebooks
+            notebooks={state.notebooks}
+            notebookOrder={state.notebookOrder}
+            handleNotebookClick={handleNotebookClick}
+          />
+        ) : (
+          <Note
+            notebooks={state.notebooks}
+            notebookOrder={state.notebookOrder}
+            notebook={notebook}
+            addNewNote={addNewNote}
+            open={open}
+            updateNote={updateNote}
+            currentNoteId={currentNoteId}
+            setCurrentNoteId={setCurrentNoteId}
+            formatDate={formatDate}
+            moveNote={moveNote}
+            handleSnackbar={handleSnackbar}
+            deleteNote={deleteNote}
+          />
+        )}
       </DndProvider>
-
       <Snackbar
         open={open}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}

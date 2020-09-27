@@ -1,7 +1,5 @@
 import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import NoteList from './note-list';
 import EditorTitle from './editor-title';
 import Editor from './editor';
@@ -14,6 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDdirection: 'row',
       height: '100vh',
+      width: '100%',
     },
     loading: {
       margin: '20px 20px 0px 20px',
@@ -60,35 +59,33 @@ export default function Note(props: INoteProps) {
   return (
     <>
       <div className={classes.root}>
-        <div className={classes.box}>
-          {props.notebook ? (
-            // <DndProvider backend={HTML5Backend}>
+        {props.notebook ? (
+          <div className={classes.box}>
             <NoteList {...props} />
-          ) : (
-            // </DndProvider>
-            <div className={classes.empty}>
-              <div className={classes.emptyIcon}>
-                <CgNotes />
-              </div>
-              <div>It all begins with notes</div>
-              <div>
-                Click the{' '}
-                <span
-                  onClick={() => props.addNewNote('', '')}
-                  className={classes.newNoteText}
-                >
-                  + New Note
-                </span>{' '}
-                button in the side bar to create note.
-              </div>
+          </div>
+        ) : (
+          <div className={classes.empty}>
+            <div className={classes.emptyIcon}>
+              <CgNotes />
             </div>
-          )}
-        </div>
+            <div>It all begins with notes</div>
+            <div>
+              Click the{' '}
+              <span
+                onClick={() => props.addNewNote('', '')}
+                className={classes.newNoteText}
+              >
+                + New Note
+              </span>{' '}
+              button in the side bar to create note.
+            </div>
+          </div>
+        )}
         <div>
-          {props.notebook && (
+          {props.notebook && props.currentNoteId && (
             <>
               <EditorTitle {...props} />
-              {props.currentNoteId && <Editor {...props} />}
+              <Editor {...props} />
             </>
           )}
         </div>

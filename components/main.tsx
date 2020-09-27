@@ -275,7 +275,7 @@ export default function Main() {
     };
     state.notebooks[id] = newNotbook;
     state.notebookOrder.push(id);
-    handleNotebookClick(id);
+    if (view === 'note') handleNotebookClick(id);
     handleSnackbar(`Successfully created '${title}'`, 'success');
     setState({
       ...state,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import INotebook from './interfaces/inotebook';
 import Table from '@material-ui/core/Table';
@@ -8,6 +8,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import arraySort from 'array-sort';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,9 +33,17 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     row: {
       '&:hover': {
-        backgroundColor: 'rgb(75,164,65)',
+        backgroundColor: 'lightgrey',
         color: 'white',
       },
+    },
+    arrow: {
+      padding: '0px 5px',
+      fontSize: '16px',
+    },
+    cell: {
+      cursor: 'pointer',
+      width: '25%',
     },
   })
 );
@@ -47,6 +56,8 @@ interface INotebooksProps {
 
 export default function Notebooks(props: INotebooksProps) {
   const classes = useStyles();
+  const [category, setCategory] = useState<string>('title');
+  const [reverse, setReverse] = useState<boolean>(false);
 
   const getTimeMsg = (date: Date) => {
     const createdTime = new Date(date).valueOf();
@@ -81,22 +92,32 @@ export default function Notebooks(props: INotebooksProps) {
   const createData = (
     id: string,
     title: string,
+    displayTitle: string,
     noteCount: number,
     createdAt: string,
     updatedAt: string
   ) => {
-    return { id, title, noteCount, createdAt, updatedAt };
+    return { id, title, displayTitle, noteCount, createdAt, updatedAt };
   };
 
   const rows = props.notebookOrder.map((notebook: string) => {
     return createData(
       props.notebooks[notebook].id,
+      props.notebooks[notebook].title.toLowerCase(),
       props.notebooks[notebook].title,
       props.notebooks[notebook].notes.length,
       getTimeMsg(props.notebooks[notebook].createdAt),
       getTimeMsg(props.notebooks[notebook].updatedAt)
     );
   });
+
+  const handleSort = (cat: string) => {
+    setCategory(cat);
+    setReverse(false);
+    if (cat === category) {
+      setReverse(!reverse);
+    }
+  };
 
   return (
     <div className={classes.root}>
@@ -106,14 +127,49 @@ export default function Notebooks(props: INotebooksProps) {
           <Table className={classes.table} aria-label="customized table">
             <TableHead>
               <TableRow>
-                <TableCell>Notebook</TableCell>
-                <TableCell align="center">Number of Notes</TableCell>
-                <TableCell align="center">Created Date</TableCell>
-                <TableCell align="center">Update Date</TableCell>
+                <TableCell
+                  className={classes.cell}
+                  onClick={() => handleSort('title')}
+                >
+                  Title
+                  {category === 'title' && (
+                    <span className={classes.arrow}>{reverse ? '↓' : '↑'}</span>
+                  )}
+                </TableCell>
+                <TableCell
+                  align="center"
+                  className={classes.cell}
+                  onClick={() => handleSort('noteCount')}
+                >
+                  Number of Notes
+                  {category === 'noteCount' && (
+                    <span className={classes.arrow}>{reverse ? '↓' : '↑'}</span>
+                  )}
+                </TableCell>
+                <TableCell
+                  align="center"
+                  className={classes.cell}
+                  onClick={() => handleSort('createdAt')}
+                >
+                  Created Date
+                  {category === 'createdAt' && (
+                    <span className={classes.arrow}>{reverse ? '↓' : '↑'}</span>
+                  )}
+                </TableCell>
+                <TableCell
+                  align="center"
+                  className={classes.cell}
+                  onClick={() => handleSort('updatedAt')}
+                >
+                  Update Date
+                  {category === 'updatedAt' && (
+                    <span className={classes.arrow}>{reverse ? '↓' : '↑'}</span>
+                  )}
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row) => (
+              {arraySort(rows, category, { reverse }).map((row) => (
                 <TableRow key={row.id} className={classes.row}>
                   <TableCell
                     component="th"
@@ -121,7 +177,7 @@ export default function Notebooks(props: INotebooksProps) {
                     onClick={() => props.handleNotebookClick(row.id)}
                     style={{ cursor: 'pointer' }}
                   >
-                    {row.title}
+                    {row.displayTitle}
                   </TableCell>
                   <TableCell align="center">{row.noteCount}</TableCell>
                   <TableCell align="center">{row.createdAt}</TableCell>

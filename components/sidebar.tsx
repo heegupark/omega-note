@@ -113,7 +113,11 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     icon: {
-      minWidth: '35px',
+      minWidth: '40px',
+      color: 'rgb(165,165,165)',
+    },
+    iconMinimized: {
+      minWidth: '25px',
       color: 'rgb(165,165,165)',
     },
     addNoteIcon: {
@@ -173,6 +177,7 @@ export default function Sidebar(props: SidebarProps) {
   };
 
   const addNewNotebook = () => {
+    setOpen(true);
     setAddNotebook(true);
   };
 
@@ -228,6 +233,13 @@ export default function Sidebar(props: SidebarProps) {
           key="add-note"
           className={classes.addNote}
           style={{ width: open ? '85%' : '70%' }}
+          onClick={() => {
+            if (props.notebook) {
+              props.addNewNote('', '');
+            } else {
+              addNewNotebook();
+            }
+          }}
         >
           <ListItemIcon style={{ minWidth: '35px' }}>
             <Tooltip title="Click to add a note" arrow>
@@ -236,15 +248,9 @@ export default function Sidebar(props: SidebarProps) {
           </ListItemIcon>
           <Tooltip title="Click to add a notebook" arrow>
             {props.notebook ? (
-              <ListItemText
-                primary="New Note"
-                onClick={() => props.addNewNote('', '')}
-              />
+              <ListItemText primary={open ? 'New Note' : ''} />
             ) : (
-              <ListItemText
-                primary="New Notebook"
-                onClick={() => addNewNotebook()}
-              />
+              <ListItemText primary={open ? 'New Notebook' : ''} />
             )}
           </Tooltip>
         </ListItem>
@@ -256,16 +262,24 @@ export default function Sidebar(props: SidebarProps) {
           className={
             props.notebook === '' ? classes.folderSelected : classes.folder
           }
-          onClick={() => {
-            props.handleNotebookClick('');
-            props.setView('notebooks');
-          }}
           style={{ padding: open ? '0px 10px' : '0px 15px' }}
         >
           <ListItemIcon>
-            <NoteRoundedIcon className={classes.icon} />
+            <NoteRoundedIcon
+              className={open ? classes.icon : classes.iconMinimized}
+              onClick={() => {
+                props.handleNotebookClick('');
+                props.setView('notebooks');
+              }}
+            />
           </ListItemIcon>
-          <ListItemText primary="Notebooks" />
+          <ListItemText
+            primary="Notebooks"
+            onClick={() => {
+              props.handleNotebookClick('');
+              props.setView('notebooks');
+            }}
+          />
           <ListItemIcon
             onClick={() => {
               addNewNotebook();
@@ -299,7 +313,9 @@ export default function Sidebar(props: SidebarProps) {
             }}
           >
             <ListItemIcon>
-              <ImportContactsIcon className={classes.icon} />
+              <ImportContactsIcon
+                className={open ? classes.icon : classes.iconMinimized}
+              />
             </ListItemIcon>
             <input
               autoFocus
@@ -333,7 +349,9 @@ export default function Sidebar(props: SidebarProps) {
           ref={drop}
         >
           <ListItemIcon>
-            <DeleteOutlineRoundedIcon className={classes.icon} />
+            <DeleteOutlineRoundedIcon
+              className={open ? classes.icon : classes.iconMinimized}
+            />
           </ListItemIcon>
           <ListItemText primary="Trash" />
         </ListItem>

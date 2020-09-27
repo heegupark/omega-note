@@ -13,17 +13,17 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     backgroundColor: 'rgb(222, 222, 222)',
-    border: '1px solid rgb(255, 192, 47)',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(1, 2, 2),
     textAlign: 'center',
     width: '350px',
     borderRadius: '5px',
     fontSize: '12px',
+    outline: 'none',
   },
   title: {
     fontSize: '22px',
-    color: 'rgb(66, 54, 48)',
+    color: 'rgb(65, 165, 75)',
   },
   button: {
     height: '30px',
@@ -32,12 +32,12 @@ const useStyles = makeStyles((theme) => ({
   },
   paragraph: {
     fontSize: '12px',
-    color: 'rgb(66, 54, 48)',
+    color: 'black',
     marginBottom: '5px',
   },
   support: {
     fontSize: '12px',
-    color: 'rgb(66, 54, 48)',
+    color: 'black',
     marginTop: '5px',
   },
   email: {
@@ -46,7 +46,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Disclaimer(props: any) {
+interface IndexProps {
+  setIsAcceptDisclaimer: (isAcceptDisclaimer: boolean) => void;
+}
+
+function Disclaimer(props: IndexProps) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
 
@@ -55,7 +59,7 @@ function Disclaimer(props: any) {
   };
 
   const handleAcceptClick = () => {
-    localStorage.setItem('omeganoteaccept', true as any);
+    localStorage.setItem('omeganoteaccept', 'true');
     props.setIsAcceptDisclaimer(true);
     handleClose();
   };
@@ -76,7 +80,7 @@ function Disclaimer(props: any) {
             <p className={classes.title}>Welcome to Omega Note</p>
             <div className={classes.paragraph}>
               This app is created strictly for demonstration purposes. By
-              clicking the button below, you accept that Omega Note do not
+              clicking the button below, you accept that Omega Note does not
               guarantee storing your messages.
             </div>
             <Button

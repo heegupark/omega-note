@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import Disclaimer from './disclaimer';
 import Sidebar from './sidebar';
 import Note from './note';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';

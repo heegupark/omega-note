@@ -17,6 +17,7 @@ import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 import IMainProps from './interfaces/imainprops';
 import SideBarItem from './sidebar-item';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import { useDrop } from 'react-dnd';
 
 const drawerWidth = 240;
 
@@ -182,6 +183,19 @@ export default function Sidebar(props: SidebarProps) {
     }
   };
 
+  const [{ isOver, item }, drop] = useDrop({
+    accept: 'note',
+    drop: () => moveToTrash(),
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+      item: monitor.getItem(),
+    }),
+  });
+
+  const moveToTrash = () => {
+    props.moveNote(item?.notebook, 'trash', item?.id);
+  };
+
   return (
     <Drawer
       variant="permanent"
@@ -278,7 +292,6 @@ export default function Sidebar(props: SidebarProps) {
           : ''}
         {addNotebook && (
           <ListItem
-            // onClick={() => props.handleNotebookClick(notebook)}
             style={{
               padding: open ? '0px 0px 0px 30px' : '0px 15px',
             }}
@@ -310,7 +323,12 @@ export default function Sidebar(props: SidebarProps) {
             props.notebook === 'trash' ? classes.folderSelected : classes.folder
           }
           onClick={() => props.handleNotebookClick('trash')}
-          style={{ padding: open ? '0px 10px' : '0px 15px' }}
+          style={{
+            padding: open ? '0px 10px' : '0px 15px',
+            backgroundColor: isOver ? 'green' : '',
+            borderRadius: isOver ? '5px' : '',
+          }}
+          ref={drop}
         >
           <ListItemIcon>
             <DeleteOutlineRoundedIcon className={classes.icon} />

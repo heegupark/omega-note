@@ -11,7 +11,7 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import Button from '@material-ui/core/Button';
-import { useDrop, DropTarget } from 'react-dnd';
+import { useDrop } from 'react-dnd';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -96,31 +96,21 @@ export default function SidebarItem(props: SidebarItemProps) {
     handleModalClose();
   };
 
-  const canMoveNote = () => {
-    console.log('note can be here');
-  };
-
-  const [{ isOver, canDrop, item }, drop] = useDrop({
+  const [{ isOver, item }, drop] = useDrop({
     accept: 'note',
     drop: () => moveNote(),
     collect: (monitor) => ({
       isOver: monitor.isOver(),
-      canDrop: monitor.canDrop(),
       item: monitor.getItem(),
     }),
   });
 
   const moveNote = () => {
-    console.log(props.thisNotebook);
-    console.log(item?.id);
-    console.log(item?.notebook);
-    console.log('note got here');
     if (item?.notebook !== props.thisNotebook) {
       props.moveNote(item?.notebook, props.thisNotebook, item?.id);
     }
   };
 
-  const isActive = isOver && canDrop;
   return (
     <>
       <ListItem
@@ -137,8 +127,8 @@ export default function SidebarItem(props: SidebarItemProps) {
         }}
         style={{
           padding: props.open ? '0px 0px 0px 30px' : '0px 15px',
-          backgroundColor: isActive ? 'green' : '',
-          borderRadius: isActive ? '5px' : '',
+          backgroundColor: isOver ? 'green' : '',
+          borderRadius: isOver ? '5px' : '',
         }}
         ref={drop}
       >

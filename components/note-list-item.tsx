@@ -192,8 +192,14 @@ export default function NoteListItem(props: NoteListProps) {
       convertedString.length > limit ? '...' : ''
     }`;
   };
-
   const isSelected = props.note.id === props.currentNoteId;
+
+  const handleClickInTrash = () => {
+    if (isSelected) {
+      props.handleSnackbar('You can not drag a note to other place', 'error');
+    }
+  };
+
   return (
     <>
       <div
@@ -201,7 +207,7 @@ export default function NoteListItem(props: NoteListProps) {
         onClick={() => props.setCurrentNoteId(props.note.id)}
       >
         {props.note.isDeleted ? (
-          <div>
+          <div onClick={handleClickInTrash}>
             <div className={classes.noteTitle}>
               {props.convertTitle(props.note.noteTitle, 20)}
             </div>

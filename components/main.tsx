@@ -192,15 +192,20 @@ export default function Main() {
     state.notebooks[newId].updatedAt = new Date();
     handleNotebookClick(origin);
     updateDate(origin, noteId);
-    if (destination === 'trash') {
+    if (origin === 'trash') {
+      handleSnackbar(
+        `A note is restored to ${state.notebooks[newId].title}`,
+        'success'
+      );
+    } else if (destination === 'trash') {
       handleSnackbar(
         `A note is moved to ${state.notebooks[newId].title}`,
         'warning'
       );
     } else {
       handleSnackbar(
-        `A note is restored to ${state.notebooks[newId].title}`,
-        'success'
+        `A note is moved to ${state.notebooks[newId].title}`,
+        'info'
       );
     }
     setState({

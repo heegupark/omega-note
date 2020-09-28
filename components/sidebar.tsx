@@ -281,20 +281,23 @@ export default function Sidebar(props: SidebarProps) {
               props.setView('notebooks');
             }}
           />
-          <ListItemIcon
-            onClick={() => {
-              addNewNotebook();
-            }}
-            onMouseOver={() => setAddNotebookButton(true)}
-            onMouseLeave={() => setAddNotebookButton(false)}
-          >
-            {addNotebookButton && open ? (
-              <AddIcon className={classes.addNotebookIcon} />
-            ) : (
-              <MoreHorizIcon className={classes.menuNotebookIcon} />
-            )}
-          </ListItemIcon>
+          <Tooltip title="Click to add a notebook" arrow>
+            <ListItemIcon
+              onClick={() => {
+                addNewNotebook();
+              }}
+              onMouseOver={() => setAddNotebookButton(true)}
+              onMouseLeave={() => setAddNotebookButton(false)}
+            >
+              {addNotebookButton && open ? (
+                <AddIcon className={classes.addNotebookIcon} />
+              ) : (
+                <MoreHorizIcon className={classes.menuNotebookIcon} />
+              )}
+            </ListItemIcon>
+          </Tooltip>
         </ListItem>
+
         {props.notebookOrder.length > 0
           ? props.notebookOrder.map((notebook: any) => {
               return (

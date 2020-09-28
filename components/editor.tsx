@@ -7,6 +7,7 @@ import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
 import INote from './interfaces/inote';
 import INoteProps from './interfaces/inoteprops';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,7 +42,12 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     dot: {
       cursor: 'pointer',
-      marginTop: '10px',
+      // marginTop: '10px',
+      padding: '5px',
+      verticalAlign: 'middle',
+      '&:hover': {
+        color: 'grey',
+      },
     },
     modal: {
       display: 'flex',
@@ -209,19 +215,23 @@ export default function Editor(props: INoteProps) {
           >
             {title}
           </span>
-          <Menu
-            id="dot-menu"
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={handlePopoverClose}
-          >
-            <MenuItem onClick={handleRestore}>Restore</MenuItem>
-            <MenuItem onClick={handleModalOpen}>Delete</MenuItem>
-          </Menu>
-          <span className={classes.dot} onClick={handlePopoverOpen}>
-            <HiDotsHorizontal />
-          </span>
+          <Tooltip title="Click to restore or delete" arrow>
+            <>
+              <Menu
+                id="dot-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handlePopoverClose}
+              >
+                <MenuItem onClick={handleRestore}>Restore</MenuItem>
+                <MenuItem onClick={handleModalOpen}>Delete</MenuItem>
+              </Menu>
+              <span className={classes.dot} onClick={handlePopoverOpen}>
+                <HiDotsHorizontal />
+              </span>
+            </>
+          </Tooltip>
           <div
             className={classes.editorInTrash}
             dangerouslySetInnerHTML={{ __html: contents }}
@@ -280,9 +290,11 @@ export default function Editor(props: INoteProps) {
           >
             <MenuItem onClick={handleMoveToTrash}>Move to trash</MenuItem>
           </Menu>
-          <span className={classes.dot} onClick={handlePopoverOpen}>
-            <HiDotsHorizontal />
-          </span>
+          <Tooltip title="Click to move this note to trash" arrow>
+            <span className={classes.dot} onClick={handlePopoverOpen}>
+              <HiDotsHorizontal />
+            </span>
+          </Tooltip>
           {!!ReactQuill && isOpen && (
             <ReactQuill
               theme={theme}

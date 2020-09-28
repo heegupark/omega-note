@@ -12,6 +12,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import Button from '@material-ui/core/Button';
 import { useDrop } from 'react-dnd';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -136,19 +137,21 @@ export default function SidebarItem(props: SidebarItemProps) {
           <ImportContactsIcon className={classes.icon} />
         </ListItemIcon>
         <ListItemText primary={props.notebooks[props.thisNotebook].title} />
-        <ListItemIcon
-          onClick={() => {
-            removeNewNotebook();
-          }}
-          onMouseOver={() => setRemoveNotebookButton(true)}
-          onMouseLeave={() => setRemoveNotebookButton(false)}
-        >
-          {removeNotebookButton && open ? (
-            <RemoveIcon className={classes.removeNotebookIcon} />
-          ) : (
-            <MoreHorizIcon className={classes.menuNotebookIcon} />
-          )}
-        </ListItemIcon>
+        <Tooltip title="Click to delete this notebook" arrow>
+          <ListItemIcon
+            onClick={() => {
+              removeNewNotebook();
+            }}
+            onMouseOver={() => setRemoveNotebookButton(true)}
+            onMouseLeave={() => setRemoveNotebookButton(false)}
+          >
+            {removeNotebookButton && open ? (
+              <RemoveIcon className={classes.removeNotebookIcon} />
+            ) : (
+              <MoreHorizIcon className={classes.menuNotebookIcon} />
+            )}
+          </ListItemIcon>
+        </Tooltip>
       </ListItem>
       <Modal
         className={classes.modal}

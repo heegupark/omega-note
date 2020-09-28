@@ -238,7 +238,11 @@ export default function NoteListItem(props: NoteListProps) {
             <span className={classes.previewIcon}>
               <BsBook />
             </span>
-            <span className={classes.previewItem}>{item?.name}</span>
+            <span className={classes.previewItem}>
+              {item?.name.length > 20
+                ? item?.name.substring(0, 20) + '...'
+                : item?.name}
+            </span>
           </div>
         </div>
       </div>
